@@ -22,3 +22,11 @@
 	text-align: right;
 	cursor: e-resize;
 }
+
+#forward {
+	margin: auto;
+	display: none;
+	width: 40%;
+	text-align: center;
+	cursor: n-resize;
+}
