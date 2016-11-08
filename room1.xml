@@ -10,7 +10,7 @@
 		<view ID="w"></view>
 	</room>
 	<room ID = "foyer">
-		<view ID="no">
+		<view ID="n">
 			<fwd-room>kitchen</fwd-room>
 			<fwd-view>n</fwd-view>
 		</view>
