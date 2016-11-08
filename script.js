@@ -26,10 +26,10 @@ function loadArea(areaName) {
 		type: "GET",
 		url: areaName + ".xml",
 		dataType: "xml",
-		async: false, // I am apparently not supposed to do this??
 		success: function(xml) {
 			$area = $(xml);
-			console.log($area.find("foo").text());
+			console.log("area "+ areaName + " loaded!")
+			navToIndex(0);
 		}
 	});
 }
