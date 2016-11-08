@@ -14,9 +14,11 @@
 
 #left {
 	float: left;
+        cursor: w-resize;
 }
 
 #right {
 	float: right;
 	text-align: right;
+        cursor: e-resize;
 }
