@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<area>
+	<room ID = "kitchen">
+		<foo>foobar!</foo>
+		<view>n</view>
+		<view>e</view>
+		<view>s</view>
+			<forward>true</forward>
+			<fwd-room>foyer</fwd-room>
+			<fwd-view>s</fwd-view>
+		<view>w</view>
+	</room>
+</area>
