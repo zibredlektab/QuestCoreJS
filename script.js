@@ -1,4 +1,5 @@
-var kitchenviews = ["kitchen-n.png","kitchen-e.png","kitchen-s.png","kitchen-w.png"];
+$.getScript("room1.js"); //note that this only works over http://, not file:// (for local testing)
+
 var viewindex = 0;
 
 $(document).ready(function(){
@@ -43,5 +44,5 @@ function navToIndex(index) {
 	if (index == undefined) {
 		index = 0;
 	}	
-	$(".game").css("background-image" , "url(\"img/" + kitchenviews[index] + "\")");
+	$(".game").css("background-image" , "url(\"img/" + kitchenviews[index] + ".png\")");
 }

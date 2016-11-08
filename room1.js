@@ -1,0 +1,1 @@
+var kitchenviews = ["kitchen-n", "kitchen-e", "kitchen-s", "kitchen-w"];
