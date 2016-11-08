@@ -2,22 +2,46 @@ var kitchenviews = ["kitchen-n.png","kitchen-e.png","kitchen-s.png","kitchen-w.p
 var viewindex = 0;
 
 $(document).ready(function(){
+
+	// left nav button logic
 	$("#left").click(function(){
-		viewindex--;
-		if (viewindex < 0) {
-			viewindex = kitchenviews.length - 1
-		}
-		$(".game").css("background-image" , "url(\"img/" + kitchenviews[viewindex] + "\")");
-		console.log("left clicked, now looking at " + kitchenviews[viewindex] + ".");
+		turnTo("left");
 	});
 	
+	// right nav button logic
 	$("#right").click(function(){
+		turnTo("right");
+	});
+	
+});
+
+
+// turnTo is a macro to simplify the logic of cycling from view to view within a room, and
+// then navigating to the appropriate view.
+function turnTo(direction) {
+	if (direction == undefined) {
+		direction = "left";
+	} else if (direction == "left") {
+		viewindex--;
+		if (viewindex < 0) {
+			viewindex = kitchenviews.length - 1;
+		}
+	} else if (direction == "right") {
 		viewindex++;
 		if (viewindex >= kitchenviews.length) {
 			viewindex = 0;
 		}
-		$(".game").css("background-image" , "url(\"img/" + kitchenviews[viewindex] + "\")");
-		console.log("right clicked, now looking at " + kitchenviews[viewindex] + ".");
+	}
+	
+	navToIndex(viewindex);
+}
 
-	});
-});
+
+// navToIndex does the brunt work of swapping the background image, based on the provided
+// "index" argument.
+function navToIndex(index) {
+	if (index == undefined) {
+		index = 0;
+	}	
+	$(".game").css("background-image" , "url(\"img/" + kitchenviews[index] + "\")");
+}
