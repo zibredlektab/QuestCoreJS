@@ -1,0 +1,22 @@
+.game {
+	background-image: url("img/kitchen-n.png");
+	background-size: 100%;
+	width: 640px;
+	height: 360px;
+	margin: auto;
+}
+.nav {
+	position: relative;
+	height: 100%;
+	width: 20%;
+	color: transparent;
+}
+
+#left {
+	float: left;
+}
+
+#right {
+	float: right;
+	text-align: right;
+}
