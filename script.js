@@ -20,6 +20,11 @@ $(document).ready(function(){
 		turnTo("right");
 	});
 
+	// forward nav button logic
+	$("#forward").click(function(){
+		switchToRoom($currentview.find("fwd-room").text());
+	});
+
 });
 
 
@@ -34,7 +39,7 @@ function loadArea(areaName) {
 		success: function(xml) {
 			$area = $(xml);
 
-			getRoomData(startingroom);
+			switchToRoom(startingroom);
 
 			//console.log("area "+ areaName + " loaded");
 			//console.log("currently in room " + $currentroom.attr("ID"));
@@ -80,21 +85,23 @@ function navToIndex(index) {
 
 	console.log ("navigating to index " + index);
 
-	$currentview = $area.find("view").eq(index);
+	$currentview = $currentroom.find("view").eq(index);
 	$(".game").css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + $currentview.attr("ID") + ".png\")");
 
 	onLoadView();
 }
 
 
-// getRoomData assigns $customroom to the room data matching the requested ID
-function getRoomData(roomID) {
+// switchToRoom assigns $customroom to the room data matching the requested ID
+function switchToRoom(roomID) {
+
+	console.log("attempting to switch to room " + roomID);
 
 	var foundcurrentroom = false;
 
 	// pull out all of the room objects from the area file
 	$area.find("room").each(function(){
-		if ($(this).attr("ID") == startingroom && !foundcurrentroom) {
+		if ($(this).attr("ID") == roomID && !foundcurrentroom) {
 			// if this is the right ID, then we're done here
 			$currentroom = $(this);
 			foundcurrentroom = true;
@@ -105,6 +112,8 @@ function getRoomData(roomID) {
 	if (!foundcurrentroom) {
 		alert("requested room doesn't exist in this area");
 	}
+
+	navToIndex(viewindex); // eventually make sure this actually switches to the specified node rather than just the matching node....
 }
 
 
