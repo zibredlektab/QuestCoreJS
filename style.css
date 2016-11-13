@@ -14,13 +14,13 @@
 
 #left {
 	float: left;
-	cursor: w-resize;
+	cursor: url(cursor/left.png) 5 16, w-resize;
 }
 
 #right {
 	float: right;
 	text-align: right;
-	cursor: e-resize;
+	cursor: url(cursor/right.png) 27 15, e-resize;
 }
 
 #forward {
@@ -28,5 +28,5 @@
 	display: none;
 	width: 40%;
 	text-align: center;
-	cursor: n-resize;
+	cursor: url(cursor/forward.png) 16 5, n-resize;
 }
