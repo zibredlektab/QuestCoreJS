@@ -22,7 +22,16 @@ $(document).ready(function(){
 
 	// forward nav button logic
 	$("#forward").click(function(){
-		switchToRoom($currentview.find("fwd-room").text(), $currentview.find("fwd-view").text());
+		if ($currentview.has("fwd-room").length > 0) {
+			if ($currentview.has("fwd-dir").length > 0) {
+				switchToRoomWithDirection($currentview.find("fwd-room").text(), $currentview.find("fwd-dir").text());
+			} else {
+				console.log("no fwd dir");
+				switchToRoom($currentview.find("fwd-room").text());
+			}
+		} else {
+			console.log ("trying to move forward in a room that should not have a forward link...");
+		}
 	});
 
 });
@@ -39,12 +48,12 @@ function loadArea(areaName) {
 		success: function(xml) {
 			$area = $(xml);
 
-			switchToRoom(startingroom);
+			switchToRoomWithDirection(startingroom, "n");
 
 			//console.log("area "+ areaName + " loaded");
 			//console.log("currently in room " + $currentroom.attr("ID"));
 
-			navToIndex(0);
+			//navToIndex(0);
 		}
 	});
 }
@@ -74,6 +83,8 @@ function turnTo(direction) {
 }
 
 
+
+
 // navToIndex does the brunt work of swapping the background image, based on the provided
 // "index" argument.
 function navToIndex(index) {
@@ -92,8 +103,12 @@ function navToIndex(index) {
 }
 
 
+
+
 // switchToRoom assigns $customroom to the room data matching the requested ID
-function switchToRoom(roomID, viewID) {
+// I would like to also make a version of this function that only takes a roomID, and
+// supplies viewID with the current ID...
+function switchToRoomWithDirection(roomID, viewdirection) {
 
 	console.log("attempting to switch to room " + roomID);
 
@@ -113,8 +128,18 @@ function switchToRoom(roomID, viewID) {
 		alert("requested room doesn't exist in this area");
 	}
 
-	navToIndex(getViewIndexFromDirection(viewID));
+	navToIndex(getViewIndexFromDirection(viewdirection));
 }
+
+// switchToRoom shortcuts, so that we need not always specify a direction (usually, switching
+// rooms will take us to the same direction in a new room)
+function switchToRoom(roomID) {
+	switchToRoomWithDirection(roomID, $currentview.attr("dir"));
+	console.log("switching to room " + roomID + " with view " + $currentview.attr("dir"));
+}
+
+
+
 
 
 // getViewIndex takes the name of a view (usually a cardinal direction) and returns a
@@ -135,6 +160,8 @@ function getViewIndexFromDirection(direction) {
 	}
 
 }
+
+
 
 function onLoadView() {
 	// determine whether the "forward" clickbox should be active & make it so

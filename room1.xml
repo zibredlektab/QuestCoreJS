@@ -5,14 +5,13 @@
 		<view dir="e"></view>
 		<view dir="s">
 			<fwd-room>foyer</fwd-room>
-			<fwd-view>s</fwd-view>
 		</view>
 		<view dir="w"></view>
 	</room>
 	<room ID = "foyer">
 		<view dir="n">
 			<fwd-room>kitchen</fwd-room>
-			<fwd-view>n</fwd-view>
+			<fwd-dir>n</fwd-dir>
 		</view>
 		<view dir="e"></view>
 		<view dir="s"></view>
