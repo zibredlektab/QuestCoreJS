@@ -7,6 +7,7 @@
 	margin: auto;
 	cursor: url(cursor/default.png) 4 5, default;
 }
+
 .nav {
 	position: relative;
 	height: 100%;
@@ -31,4 +32,12 @@
 	width: 40%;
 	text-align: center;
 	cursor: url(cursor/forward.png) 16 5, n-resize;
+}
+
+.obj {
+	cursor: pointer;
+	display: block;
+	position: relative;
+	background-repeat: no-repeat;
+	background-size: 100%;
 }

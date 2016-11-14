@@ -50,11 +50,15 @@ function loadArea(areaName) {
 
 			switchToRoomWithDirection(startingroom, "n");
 
-			//console.log("area "+ areaName + " loaded");
-			//console.log("currently in room " + $currentroom.attr("ID"));
+			console.log("area "+ areaName + " loaded");
+			console.log("currently in room " + $currentroom.attr("ID"));
 
 			//navToIndex(0);
-		}
+		},
+		error: function (xhr, ajaxOptions, thrownError) {
+			console.log("encountered an error parsing + " + areaName + ".xml")
+        	alert(thrownError);
+      	}
 	});
 }
 
@@ -89,12 +93,15 @@ function turnTo(direction) {
 // "index" argument.
 function navToIndex(index) {
 	// I don't know in what circumstance I'd ever call this function without a valid index, but just in case...
+
 	if (index == undefined) {
 		console.log("index to navigate to was undefined, navigating to 0");
 		index = 0;
 	}
 
 	console.log ("navigating to index " + index);
+
+	onLeaveView();
 
 	$currentview = $currentroom.find("view").eq(index);
 	$(".game").css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + $currentview.attr("dir") + ".png\")");
@@ -105,9 +112,8 @@ function navToIndex(index) {
 
 
 
-// switchToRoom assigns $customroom to the room data matching the requested ID
-// I would like to also make a version of this function that only takes a roomID, and
-// supplies viewID with the current ID...
+// switchToRoomWithDirection assigns $customroom to the room data matching the requested ID
+// and navigates to the specified direction in the room.
 function switchToRoomWithDirection(roomID, viewdirection) {
 
 	console.log("attempting to switch to room " + roomID);
@@ -120,6 +126,7 @@ function switchToRoomWithDirection(roomID, viewdirection) {
 			// if this is the right ID, then we're done here
 			$currentroom = $(this);
 			foundcurrentroom = true;
+			return false;
 		}
 	});
 
@@ -131,7 +138,7 @@ function switchToRoomWithDirection(roomID, viewdirection) {
 	navToIndex(getViewIndexFromDirection(viewdirection));
 }
 
-// switchToRoom shortcuts, so that we need not always specify a direction (usually, switching
+// switchToRoom shortcut, so that we need not always specify a direction (usually, switching
 // rooms will take us to the same direction in a new room)
 function switchToRoom(roomID) {
 	switchToRoomWithDirection(roomID, $currentview.attr("dir"));
@@ -150,7 +157,9 @@ function getViewIndexFromDirection(direction) {
 	$currentroom.find("view").each(function() {
 		if (!foundview && $(this).attr("dir") == direction) {
 			foundview = true;
+			return false;
 		}
+		viewcount++;
 	});
 
 	if (!foundview) {
@@ -171,6 +180,27 @@ function onLoadView() {
 	} else {
 		//console.log("forward does not exist here");
 		$("#forward").css("display", "none");
+	}
+
+	// add any relevant objects to the view
+	$currentview.find("object").each(function(){
+		var objid = $(this).attr("id");
+		console.log("adding object " + objid);
+		$(".game").prepend("<a href=\"#obj\" class=\"obj\" id=\""+objid+"\"></a>");//("<div class=\"obj\" id=\"" + objid + "></div>");
+		$("#" + objid).css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + objid + ".png\")");
+		$("#" + objid).css("width", $(this).attr("width") / 3); // this should eventually scale dynamically with the canvas
+		$("#" + objid).css("height", $(this).attr("height") / 3);
+		$("#" + objid).css("top", $(this).attr("y") + "%");
+		$("#" + objid).css("left", $(this).attr("x") + "%");
+	});
+}
+
+function onLeaveView() {
+	if ($currentview != undefined) {
+		$(".obj").each(function(){
+			console.log("removing object " + $(this).attr("id"));
+			$(this).remove();
+		});
 	}
 }
 

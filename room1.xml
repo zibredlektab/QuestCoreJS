@@ -2,16 +2,20 @@
 <area>
 	<room ID = "kitchen">
 		<view dir="n"></view>
-		<view dir="e"></view>
+		<view dir="e">
+			<object id="safe" x="38" y="42" width="575" height="575"></object>
+		</view>
 		<view dir="s">
 			<fwd-room>foyer</fwd-room>
 		</view>
-		<view dir="w"></view>
+		<view dir="w">
+			<object id="ink" x="25" y="35" width="75" height="81"></object>
+		</view>
+		<objview id="safe"></objview>
 	</room>
 	<room ID = "foyer">
 		<view dir="n">
 			<fwd-room>kitchen</fwd-room>
-			<fwd-dir>n</fwd-dir>
 		</view>
 		<view dir="e"></view>
 		<view dir="s"></view>
