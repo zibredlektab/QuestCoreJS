@@ -1,6 +1,6 @@
 var $area, $currentroom, $currentview;
 
-var viewindex = 0;
+var currentviewindex = 0;
 
 var startingarea = "room1"; // These will eventually be loaded from a config file
 var startingroom = "kitchen";
@@ -22,7 +22,7 @@ $(document).ready(function(){
 
 	// forward nav button logic
 	$("#forward").click(function(){
-		switchToRoom($currentview.find("fwd-room").text());
+		switchToRoom($currentview.find("fwd-room").text(), $currentview.find("fwd-view").text());
 	});
 
 });
@@ -59,18 +59,18 @@ function turnTo(direction) {
 	if (direction == undefined) {
 		direction = "left";
 	} else if (direction == "left") {
-		viewindex--;
-		if (viewindex < 0) {
-			viewindex = $currentroom.find("view").length-1;
+		currentviewindex--;
+		if (currentviewindex < 0) {
+			currentviewindex = $currentroom.find("view").length-1;
 		}
 	} else if (direction == "right") {
-		viewindex++;
-		if (viewindex >= $currentroom.find("view").length) {
-			viewindex = 0;
+		currentviewindex++;
+		if (currentviewindex >= $currentroom.find("view").length) {
+			currentviewindex = 0;
 		}
 	}
 
-	navToIndex(viewindex);
+	navToIndex(currentviewindex);
 }
 
 
@@ -86,14 +86,14 @@ function navToIndex(index) {
 	console.log ("navigating to index " + index);
 
 	$currentview = $currentroom.find("view").eq(index);
-	$(".game").css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + $currentview.attr("ID") + ".png\")");
+	$(".game").css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + $currentview.attr("dir") + ".png\")");
 
 	onLoadView();
 }
 
 
 // switchToRoom assigns $customroom to the room data matching the requested ID
-function switchToRoom(roomID) {
+function switchToRoom(roomID, viewID) {
 
 	console.log("attempting to switch to room " + roomID);
 
@@ -101,7 +101,7 @@ function switchToRoom(roomID) {
 
 	// pull out all of the room objects from the area file
 	$area.find("room").each(function(){
-		if ($(this).attr("ID") == roomID && !foundcurrentroom) {
+		if (!foundcurrentroom && $(this).attr("ID") == roomID) {
 			// if this is the right ID, then we're done here
 			$currentroom = $(this);
 			foundcurrentroom = true;
@@ -113,9 +113,28 @@ function switchToRoom(roomID) {
 		alert("requested room doesn't exist in this area");
 	}
 
-	navToIndex(viewindex); // eventually make sure this actually switches to the specified node rather than just the matching node....
+	navToIndex(getViewIndexFromDirection(viewID));
 }
 
+
+// getViewIndex takes the name of a view (usually a cardinal direction) and returns a
+// numerical index for that view
+function getViewIndexFromDirection(direction) {
+	var viewcount = 0;
+	var foundview = false;
+	$currentroom.find("view").each(function() {
+		if (!foundview && $(this).attr("dir") == direction) {
+			foundview = true;
+		}
+	});
+
+	if (!foundview) {
+		return viewcount;
+	} else {
+		return currentviewindex;
+	}
+
+}
 
 function onLoadView() {
 	// determine whether the "forward" clickbox should be active & make it so

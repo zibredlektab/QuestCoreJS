@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <area>
 	<room ID = "kitchen">
-		<view ID="n"></view>
-		<view ID="e"></view>
-		<view ID="s">
+		<view dir="n"></view>
+		<view dir="e"></view>
+		<view dir="s">
 			<fwd-room>foyer</fwd-room>
 			<fwd-view>s</fwd-view>
 		</view>
-		<view ID="w"></view>
+		<view dir="w"></view>
 	</room>
 	<room ID = "foyer">
-		<view ID="n">
+		<view dir="n">
 			<fwd-room>kitchen</fwd-room>
 			<fwd-view>n</fwd-view>
 		</view>
-		<view ID="e"></view>
-		<view ID="s"></view>
-		<view ID="w"></view>
+		<view dir="e"></view>
+		<view dir="s"></view>
+		<view dir="w"></view>
 	</room>
 </area>
