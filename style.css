@@ -1,9 +1,11 @@
+
 .game {
 	background-image: url("");
 	background-size: 100%;
 	width: 640px;
 	height: 360px;
 	margin: auto;
+	cursor: url(cursor/default.png) 4 5, default;
 }
 .nav {
 	position: relative;
