@@ -188,10 +188,10 @@ function onLoadView() {
 		console.log("adding object " + objid);
 		$(".game").prepend("<a href=\"#obj\" class=\"obj\" id=\""+objid+"\"></a>");//("<div class=\"obj\" id=\"" + objid + "></div>");
 		$("#" + objid).css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + objid + ".png\")");
-		$("#" + objid).css("width", $(this).attr("width") / 3); // this should eventually scale dynamically with the canvas
+		$("#" + objid).css("width", $(this).attr("width") / 3); // these should all eventually scale dynamically with the canvas
 		$("#" + objid).css("height", $(this).attr("height") / 3);
-		$("#" + objid).css("top", $(this).attr("y") + "%");
-		$("#" + objid).css("left", $(this).attr("x") + "%");
+		$("#" + objid).css("top", $(this).attr("y") / 3);
+		$("#" + objid).css("left", $(this).attr("x") / 3);
 	});
 }
 
