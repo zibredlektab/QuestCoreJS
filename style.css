@@ -35,7 +35,7 @@
 }
 
 .obj {
-	cursor: pointer;
+	cursor: url(cursor/point.png) 11 3, pointer;
 	display: block;
 	position: relative;
 	background-repeat: no-repeat;
