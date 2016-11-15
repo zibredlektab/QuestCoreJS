@@ -30,7 +30,9 @@
 }
 
 #forward {
-	margin: auto;
+	margin: 0 auto;
+	left: 0;
+	right: 0;
 	display: none;
 	width: 40%;
 	text-align: center;

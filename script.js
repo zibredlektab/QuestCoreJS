@@ -1,8 +1,9 @@
 var $currentarea, $currentroom, $currentview;
 
+var $currentroomviews = {}; // This object maps room ids to their views
 var $currentroomchain = []; // This array contains all the standard views of the current room (ie, not object views)
 
-var currentviewindex;
+var currentviewindex = 0;
 
 var startingarea = "area1"; // These will eventually be loaded from a config file
 var startingroom = "kitchen";
@@ -46,6 +47,12 @@ $(document).ready(function(){
 
 
 
+
+
+// ---------------------------------------------------------------------------------------
+// SETUP FUNCTIONS
+// ---------------------------------------------------------------------------------------
+
 // loadArea loads a set of area data (various rooms within an area, their views, etc) from
 // an XML file named [areaName].xml. It then navigates to index 0 in that room (for now)
 function loadArea(areaName) {
@@ -70,8 +77,114 @@ function loadArea(areaName) {
 	});
 }
 
+function setCurrentViewIndex(direction) {
+	//need to set currentviewindex appropriately
+	for (var i = 0; i < $currentroomchain.length; i++) {
+		if ($currentroomchain[i] == direction) {
+			currentviewindex = i;
+			return;
+		}
+	}
+}
+
+// populateRoomChain builds an array of all standard (directional, non-object) views in a room
+function populateRoomViewChain() {
+	// first, empty both the room chain and room views object
+	$currentroomchain = [];
+	$currentroomviews = {};
+
+	$currentroom.find("view").each(function(){
+		if ($(this).attr("type") != "object") {
+			console.log("adding " + $(this).attr("id") + " to the room chain");
+			$currentroomchain.push($(this).attr("id")); // add any navigable views to the room chain
+		}
+		console.log ("adding " + $(this).attr("id") + " to the room views object");
+		var viewid = $(this).attr("id");
+		$currentroomviews[viewid] = $(this); // add all views to the roomviews object
+	});
+
+	console.log(Object.entries($currentroomviews));
+}
 
 
+
+
+
+// ---------------------------------------------------------------------------------------
+// NAV FUNCTIONS
+// ---------------------------------------------------------------------------------------
+
+
+// navToView is the core navigation function, all navigation functions should eventually
+// call this.
+function navToView(viewobject) {
+	onLeaveView();
+
+	$currentview = viewobject;
+
+	changeBackgroundImage($currentroom.attr("ID"), $currentview.attr("id"));
+
+	onLoadView();
+
+}
+
+// changeBackgroundImage changes the game background image (duh)
+function changeBackgroundImage(roomname, viewname) {
+	$(".game").css("background-image", "url(\"img/" + roomname + "-" + viewname + ".png\")");
+}
+
+// navToViewByIndex uses an index number (from the current room chain) to find the
+// appropriate view (useful for turning)
+function navToViewByIndex(index) {
+
+	if (index == undefined) {
+		console.log("index to navigate to was undefined, navigating to 0");
+		index = 0;
+	}
+
+	currentviewindex = index;
+
+	console.log ("navigating to view by index " + index);
+
+	navToView($currentroomviews[$currentroomchain[index]]);
+
+}
+
+// navToViewByDirection uses the name of a direction to navigate, which is useful for room
+// switching
+function navToViewByDirection(direction) {
+
+	if (direction == undefined) {
+		console.log("index to navigate to was undefined, navigating to first view in this room");
+		direction = $currentroomchain[0];
+	}
+
+	setCurrentViewIndex(direction);
+
+	console.log ("navigating to view by direction " + direction);
+
+	navToView($currentroomviews[direction]);
+
+}
+
+// navToViewByName navigates using a specific id, this should really only be used for
+// object views, because it does not change the current view index.
+function navToViewByID(viewid) {
+
+	if (viewid == undefined) {
+		console.log("id to navigate to was undefined, navigating to first view in this room");
+		viewid = $currentroomchain[0];
+	}
+
+	console.log ("navigating to view by id" + viewid);
+
+	navToView($currentroomviews[viewid]);
+}
+
+// navToObjView takes an onclick object (as defined in xml) and begins navigating to the specified view
+function navToObjView(onclick) {
+	navToViewByID(onclick.attr("id"));
+}
 
 
 // turnTo simplifies the logic of cycling from view to view within a room (without overflowing
@@ -81,6 +194,7 @@ function turnTo(direction) {
 		direction = "left";
 	} else if (direction == "left") {
 		currentviewindex--;
+		console.log("turning left, currentviewindex is now " + currentviewindex);
 		if (currentviewindex < 0) {
 			currentviewindex = $currentroomchain.length-1;
 		}
@@ -91,137 +205,12 @@ function turnTo(direction) {
 		}
 	}
 
-	navToIndex(currentviewindex);
+	navToViewByIndex(currentviewindex);
 }
 
 
-
-
-// navToIndex does the brunt work of swapping the background image, based on the provided
-// "index" argument.
-function navToIndex(index) {
-	// I don't know in what circumstance I'd ever call this function without a valid index, but just in case...
-
-	if (index == undefined) {
-		console.log("index to navigate to was undefined, navigating to 0");
-		index = 0;
-	}
-
-	console.log ("navigating to index " + index);
-
-	onLeaveView();
-
-	$currentview = $currentroomchain[index];
-	currentviewindex = index;
-	$(".game").css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + $currentview.attr("id") + ".png\")");
-
-	onLoadView();
-}
-
-function navToView(viewid) {
-	// I don't know in what circumstance I'd ever call this function without a valid index, but just in case...
-
-	if (viewid == undefined) {
-		console.log("index to navigate to was undefined, navigating to 0");
-		viewid = "n";
-	}
-
-	console.log ("navigating to view " + viewid);
-
-
-	navToIndex(getViewIndexFromDirection(viewid));
-
-}
-
-
-function navToObjView(onclick) {
-	var viewid = onclick.attr("id");
-
-	onLeaveView();
-
-	$(".game").css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + viewid + ".png\")");
-
-	$("#back").css("display", "block");
-}
-
-
-function makePopUp(onclick) {
-
-}
-
-
-// switchToRoomWithDirection assigns $customroom to the room data matching the requested ID
-// and navigates to the specified direction in the room.
-function switchToRoomWithDirection(roomID, viewdirection) {
-
-	console.log("attempting to switch to room " + roomID);
-
-	var foundcurrentroom = false;
-
-	// pull out all of the room objects from the area file
-	$currentarea.find("room").each(function(){
-		if (!foundcurrentroom && $(this).attr("ID") == roomID) {
-			// if this is the right ID, then we're done here
-			$currentroom = $(this);
-			foundcurrentroom = true;
-			return false;
-		}
-	});
-
-	// make sure we actually found the requested room
-	if (!foundcurrentroom) {
-		alert("requested room doesn't exist in this area");
-	} else {
-
-		populateRoomViewChain();
-
-		navToView(viewdirection);
-	}
-}
-
-// switchToRoom shortcut, so that we need not always specify a direction (usually, switching
-// rooms will take us to the same direction in a new room)
-function switchToRoom(roomID) {
-	switchToRoomWithDirection(roomID, $currentview.attr("id"));
-	console.log("switching to room " + roomID + " with view " + $currentview.attr("id"));
-}
-
-
-// populateRoomChain builds an array of all standard (directional, non-object) views in a room
-function populateRoomViewChain() {
-	$currentroomchain = [];
-	$currentroom.find("view").each(function(){
-		if ($(this).attr("type") != "object") {
-			console.log("adding " + $(this).attr("id") + " to the room chain");
-			$currentroomchain.push($(this));
-		}
-	});
-}
-
-
-// getViewIndex takes the name of a view (usually a cardinal direction) and returns a
-// numerical index for that view
-function getViewIndexFromDirection(direction) {
-	var viewcount = 0;
-	var foundview = false;
-	$.each($currentroomchain, function() {
-		if (!foundview && $(this).attr("id") == direction) {
-			foundview = true;
-			return false;
-		}
-		viewcount++;
-	});
-
-	if (!foundview) {
-		return viewcount;
-	} else {
-		return currentviewindex;
-	}
-
-}
-
-
-
+// onLoadView is called any time a view is loaded. It handles setting up nav boxes and
+// objects for the given view.
 function onLoadView() {
 	// determine whether the "forward" clickbox should be active & make it so
 	if ($currentview.has("fwd-room").length > 0) {
@@ -269,6 +258,8 @@ function onLoadView() {
 	});
 }
 
+
+// onLeaveView is called just before a new view is loaded, it is used to unload objects
 function onLeaveView() {
 	if ($currentview != undefined) {
 		$(".obj").each(function(){
@@ -279,7 +270,77 @@ function onLeaveView() {
 }
 
 
-/* USEFUL DEBUG THINGS
+
+
+
+
+// ---------------------------------------------------------------------------------------
+// ROOM SWITCHING FUNCTIONS
+// ---------------------------------------------------------------------------------------
+
+
+// switchToRoomWithDirection assigns $customroom to the room data matching the requested ID
+// and navigates to the specified direction in the room.
+function switchToRoomWithDirection(roomID, viewdirection) {
+
+	console.log("attempting to switch to room " + roomID + " facing " + viewdirection);
+
+	var foundcurrentroom = false;
+
+	// pull out all of the room objects from the area file
+	$currentarea.find("room").each(function(){
+		if (!foundcurrentroom && $(this).attr("ID") == roomID) {
+			// if this is the right ID, then we're done here
+			$currentroom = $(this);
+			foundcurrentroom = true;
+			return false;
+		}
+	});
+
+	// make sure we actually found the requested room
+	if (!foundcurrentroom) {
+		alert("requested room doesn't exist in this area");
+	} else {
+
+		populateRoomViewChain();
+
+		navToViewByDirection(viewdirection);
+	}
+}
+
+// switchToRoom shortcut, so that we need not always specify a direction (usually, switching
+// rooms will take us to the same direction in a new room)
+function switchToRoom(roomID) {
+	switchToRoomWithDirection(roomID, $currentview.attr("id"));
+	console.log("switching to room " + roomID + " with view " + $currentview.attr("id"));
+}
+
+
+
+
+
+
+
+
+
+// ---------------------------------------------------------------------------------------
+// HELPER FUNCTIONS
+// ---------------------------------------------------------------------------------------
+
+
+// makePopUp takes an onclick object (as defined in xml) and constructs a popup overlay from it
+function makePopUp(onclick) {
+
+}
+
+
+
+
+// ---------------------------------------------------------------------------------------
+// USEFUL DEBUG THINGS
+// ---------------------------------------------------------------------------------------
+
+/*
 
 
 
