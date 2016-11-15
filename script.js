@@ -32,15 +32,6 @@ $(document).ready(function(){
 		navClick($(this));
 	});
 
-//	$(".objectviewnav").click(function(){
-//		navToViewByIndex(currentchainindex);
-//	});
-
-	// nav button logic
-//	$(".normalnav").click(function(){
-//		turnTo($(this).attr("id"));
-//	});
-
 	// forward nav button logic
 	$("#forward").click(function(){
 		if ($currentview.has("fwd-room").length > 0) {
@@ -119,6 +110,68 @@ function populateRoomViewChain() {
 // NAV FUNCTIONS
 // ---------------------------------------------------------------------------------------
 
+// navClick is called any time a nav button is clicked
+function navClick(navbutton) {
+
+	if ($.inArray("objectviewnav", navbutton.classes()) != -1) {
+		// we are in an object view, all nav buttons should back out to the main view
+		navToViewByIndex(currentchainindex);
+	} else {
+		// we are in a normal view, nav buttons behave according to their id
+		if (navbutton.id == "forward") {
+			goForward();
+		} else {
+			// left or right
+			turnTo(navbutton.attr("id"));
+		}
+	}
+}
+
+
+// goForward is called when a #forward nav button is clicked
+function goForward() {
+	if ($currentview.has("fwd-room").length > 0) {
+		if ($currentview.has("fwd-dir").length > 0) {
+			switchToRoomWithDirection($currentview.find("fwd-room").text(), $currentview.find("fwd-dir").text());
+		} else {
+			console.log("no fwd dir");
+			switchToRoom($currentview.find("fwd-room").text());
+		}
+	} else {
+		console.log ("trying to move forward in a room that should not have a forward link...");
+	}
+}
+
+
+// turnTo simplifies the logic of cycling from view to view within a room (without overflowing
+// the bounds of the room, and then navigating to the appropriate view.
+function turnTo(direction) {
+	if (direction == undefined) {
+		console.log("direction is undefined, doing nothing");
+		return;
+	}
+
+	if (direction == "left") {
+		currentchainindex--;
+		//console.log("turning left, currentchainindex is now " + currentchainindex);
+		if (currentchainindex < 0) {
+			currentchainindex = $currentroomchain.length-1;
+		}
+	} else if (direction == "right") {
+		currentchainindex++;
+		//console.log("turning right, currentchainindex is now " + currentchainindex);
+		if (currentchainindex >= $currentroomchain.length) {
+			currentchainindex = 0;
+		}
+	} else {
+		// this nav box doesn't go left or right, so do nothing
+		console.log ("can't turn to direction " + direction + ", doing nothing");
+		return;
+	}
+
+	navToViewByIndex(currentchainindex);
+}
+
 
 // navToView is the core navigation function, all navigation functions should eventually
 // call this.
@@ -189,34 +242,6 @@ function navToViewByID(viewid) {
 // navToObjView takes an onclick object (as defined in xml) and begins navigating to the specified view
 function navToObjView(onclick) {
 	navToViewByID(onclick.attr("id"));
-}
-
-
-// turnTo simplifies the logic of cycling from view to view within a room (without overflowing
-// the bounds of the room, and then navigating to the appropriate view.
-function turnTo(direction) {
-	if (direction == undefined) {
-		console.log("can't turn to direction " + direction + ", turning left instead");
-		direction = "left";
-	}
-
-	if (direction == "left") {
-		currentchainindex--;
-		//console.log("turning left, currentchainindex is now " + currentchainindex);
-		if (currentchainindex < 0) {
-			currentchainindex = $currentroomchain.length-1;
-		}
-	} else if (direction == "right") {
-		currentchainindex++;
-		//console.log("turning right, currentchainindex is now " + currentchainindex);
-		if (currentchainindex >= $currentroomchain.length) {
-			currentchainindex = 0;
-		}
-	} else {
-		// this nav box doesn't go left or right, so do nothing
-		return;
-	}
-	navToViewByIndex(currentchainindex);
 }
 
 
@@ -350,19 +375,6 @@ function switchToRoom(roomID) {
 // makePopUp takes an onclick object (as defined in xml) and constructs a popup overlay from it
 function makePopUp(onclick) {
 
-}
-
-
-// navClick is called any time a nav button is clicked
-function navClick(navbutton) {
-
-	if ($.inArray("objectviewnav", navbutton.classes()) != -1) {
-		// we are in an object view, all nav buttons should back out to the main view
-		navToViewByIndex(currentchainindex);
-	} else {
-		// we are in a normal view, nav buttons behave according to their id
-		turnTo(navbutton.attr("id"));
-	}
 }
 
 
