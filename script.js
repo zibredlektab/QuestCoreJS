@@ -1,29 +1,45 @@
+// ---------------------------------------------------------------------------------------
+// CONFIG
+// ---------------------------------------------------------------------------------------
+
+var startingarea = "area1"; // These will eventually be loaded from a config file
+var startingroom = "kitchen";
+var startingdirection = "n";
+
+
+
+
+
+
+// ---------------------------------------------------------------------------------------
+// INIT
+// ---------------------------------------------------------------------------------------
+
 var $currentarea, $currentroom, $currentview;
 
 var $currentroomviews = {}; // This object maps room ids to their views
 var $currentroomchain = []; // This array contains all the standard views of the current room (ie, not object views)
 
-var currentviewindex = 0;
+var currentchainindex = 0;
 
-var startingarea = "area1"; // These will eventually be loaded from a config file
-var startingroom = "kitchen";
-var startingdirection = "n";
 
 $(document).ready(function(){
 
 	// load the starting area
 	loadArea(startingarea);
 
-	// left nav button logic
-	$("#left").click(function(){
-		turnTo("left");
-		$("#left").removeClass("objectviewnav");
+	$(".nav").click(function(){
+		navClick($(this));
 	});
 
-	// right nav button logic
-	$("#right").click(function(){
-		turnTo("right");
-	});
+//	$(".objectviewnav").click(function(){
+//		navToViewByIndex(currentchainindex);
+//	});
+
+	// nav button logic
+//	$(".normalnav").click(function(){
+//		turnTo($(this).attr("id"));
+//	});
 
 	// forward nav button logic
 	$("#forward").click(function(){
@@ -39,13 +55,7 @@ $(document).ready(function(){
 		}
 	});
 
-	$("#back").click(function(){
-		navToIndex(currentviewindex);
-	});
-
 });
-
-
 
 
 
@@ -63,12 +73,9 @@ function loadArea(areaName) {
 		success: function(xml) {
 			$currentarea = $(xml);
 
-			switchToRoomWithDirection(startingroom, startingdirection);
-
 			console.log("area "+ areaName + " loaded");
-			console.log("currently in room " + $currentroom.attr("ID"));
 
-			//navToIndex(0);
+			switchToRoomWithDirection(startingroom, startingdirection);
 		},
 		error: function (xhr, ajaxOptions, thrownError) {
 			console.log("encountered an error parsing + " + areaName + ".xml")
@@ -77,11 +84,11 @@ function loadArea(areaName) {
 	});
 }
 
-function setCurrentViewIndex(direction) {
-	//need to set currentviewindex appropriately
+function setcurrentchainindex(direction) {
+	//need to set currentchainindex appropriately
 	for (var i = 0; i < $currentroomchain.length; i++) {
 		if ($currentroomchain[i] == direction) {
-			currentviewindex = i;
+			currentchainindex = i;
 			return;
 		}
 	}
@@ -95,15 +102,13 @@ function populateRoomViewChain() {
 
 	$currentroom.find("view").each(function(){
 		if ($(this).attr("type") != "object") {
-			console.log("adding " + $(this).attr("id") + " to the room chain");
+			//console.log("adding " + $(this).attr("id") + " to the room chain");
 			$currentroomchain.push($(this).attr("id")); // add any navigable views to the room chain
 		}
-		console.log ("adding " + $(this).attr("id") + " to the room views object");
+		//console.log ("adding " + $(this).attr("id") + " to the room views object");
 		var viewid = $(this).attr("id");
 		$currentroomviews[viewid] = $(this); // add all views to the roomviews object
 	});
-
-	console.log(Object.entries($currentroomviews));
 }
 
 
@@ -142,7 +147,7 @@ function navToViewByIndex(index) {
 		index = 0;
 	}
 
-	currentviewindex = index;
+	currentchainindex = index;
 
 	console.log ("navigating to view by index " + index);
 
@@ -159,7 +164,7 @@ function navToViewByDirection(direction) {
 		direction = $currentroomchain[0];
 	}
 
-	setCurrentViewIndex(direction);
+	setcurrentchainindex(direction);
 
 	console.log ("navigating to view by direction " + direction);
 
@@ -176,7 +181,7 @@ function navToViewByID(viewid) {
 		viewid = $currentroomchain[0];
 	}
 
-	console.log ("navigating to view by id" + viewid);
+	console.log ("navigating to view by id " + viewid);
 
 	navToView($currentroomviews[viewid]);
 }
@@ -191,21 +196,27 @@ function navToObjView(onclick) {
 // the bounds of the room, and then navigating to the appropriate view.
 function turnTo(direction) {
 	if (direction == undefined) {
+		console.log("can't turn to direction " + direction + ", turning left instead");
 		direction = "left";
-	} else if (direction == "left") {
-		currentviewindex--;
-		console.log("turning left, currentviewindex is now " + currentviewindex);
-		if (currentviewindex < 0) {
-			currentviewindex = $currentroomchain.length-1;
-		}
-	} else if (direction == "right") {
-		currentviewindex++;
-		if (currentviewindex >= $currentroomchain.length) {
-			currentviewindex = 0;
-		}
 	}
 
-	navToViewByIndex(currentviewindex);
+	if (direction == "left") {
+		currentchainindex--;
+		//console.log("turning left, currentchainindex is now " + currentchainindex);
+		if (currentchainindex < 0) {
+			currentchainindex = $currentroomchain.length-1;
+		}
+	} else if (direction == "right") {
+		currentchainindex++;
+		//console.log("turning right, currentchainindex is now " + currentchainindex);
+		if (currentchainindex >= $currentroomchain.length) {
+			currentchainindex = 0;
+		}
+	} else {
+		// this nav box doesn't go left or right, so do nothing
+		return;
+	}
+	navToViewByIndex(currentchainindex);
 }
 
 
@@ -221,7 +232,15 @@ function onLoadView() {
 		$("#forward").css("display", "none");
 	}
 
+	// determine if this is an object view, and if so enable the "back" clickbox
+	if ($currentview.attr("type") == "object") {
+		$("#back").css("display", "block");
+		$("#left, #right").addClass("objectviewnav");
 
+	} else {
+		$("#back").css("display", "none");
+		$("#left, #right").removeClass("objectviewnav");
+	}
 
 	// add any relevant objects to the view (maybe encapsulate this)
 	$currentview.find("object").each(function(){
@@ -243,7 +262,7 @@ function onLoadView() {
 			var $onclick = $thisobj.find("onclick");
 			if ($onclick.length) {
 				if ($onclick.attr("action") == "view") {
-					console.log("transition to view " + $onclick.attr("id"));
+					console.log("transitioning to object view " + $onclick.attr("id"));
 					navToObjView($onclick);
 				} else if ($onclick.attr("action") == "popup") {
 					console.log("popup with image: " + $onclick.attr("img"));
@@ -293,6 +312,7 @@ function switchToRoomWithDirection(roomID, viewdirection) {
 			// if this is the right ID, then we're done here
 			$currentroom = $(this);
 			foundcurrentroom = true;
+			console.log("currently in room " + $currentroom.attr("ID"));
 			return false;
 		}
 	});
@@ -301,7 +321,6 @@ function switchToRoomWithDirection(roomID, viewdirection) {
 	if (!foundcurrentroom) {
 		alert("requested room doesn't exist in this area");
 	} else {
-
 		populateRoomViewChain();
 
 		navToViewByDirection(viewdirection);
@@ -332,6 +351,21 @@ function switchToRoom(roomID) {
 function makePopUp(onclick) {
 
 }
+
+
+// navClick is called any time a nav button is clicked
+function navClick(navbutton) {
+
+	if ($.inArray("objectviewnav", navbutton.classes()) != -1) {
+		// we are in an object view, all nav buttons should back out to the main view
+		navToViewByIndex(currentchainindex);
+	} else {
+		// we are in a normal view, nav buttons behave according to their id
+		turnTo(navbutton.attr("id"));
+	}
+}
+
+
 
 
 
