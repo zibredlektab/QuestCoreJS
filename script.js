@@ -7,12 +7,16 @@ var startingroom = "kitchen";
 
 $(document).ready(function(){
 
+
+	$("#left").addClass("objectviewnav");
+
 	// load the starting area
 	loadArea(startingarea);
 
 	// left nav button logic
 	$("#left").click(function(){
 		turnTo("left");
+		$("#left").removeClass("objectviewnav");
 	});
 
 	// right nav button logic
@@ -182,16 +186,27 @@ function onLoadView() {
 		$("#forward").css("display", "none");
 	}
 
+	//
+
+
 	// add any relevant objects to the view
 	$currentview.find("object").each(function(){
-		var objid = $(this).attr("id");
-		console.log("adding object " + objid);
-		$(".game").prepend("<a href=\"#obj\" class=\"obj\" id=\""+objid+"\"></a>");//("<div class=\"obj\" id=\"" + objid + "></div>");
-		$("#" + objid).css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + objid + ".png\")");
-		$("#" + objid).css("width", $(this).attr("width") / 3); // these should all eventually scale dynamically with the canvas
-		$("#" + objid).css("height", $(this).attr("height") / 3);
-		$("#" + objid).css("top", $(this).attr("y") / 3);
-		$("#" + objid).css("left", $(this).attr("x") / 3);
+		var $objid = $(this).attr("id");
+		var $objselector = "#" + $objid;
+		console.log("adding object " + $objid);
+		$(".game").append("<a href=\"#obj\" class=\"obj\" id=\"" + $objid + "\"></a>");//("<div class=\"obj\" id=\"" + objid + "></div>");
+		if ($(this).attr("type") != "clickbox") {
+			$($objselector).css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + $objid + ".png\")");
+		}
+		$($objselector).css("width", $(this).attr("width") / 3); // these should all eventually scale dynamically with the canvas
+		$($objselector).css("height", $(this).attr("height") / 3);
+		$($objselector).css("top", $(this).attr("y") / 3);
+		$($objselector).css("left", $(this).attr("x") / 3);
+
+		$($objselector).click(function(){
+			console.log("object " + $objid + " was clicked.");
+
+		});
 	});
 }
 
