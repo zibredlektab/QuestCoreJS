@@ -4,7 +4,7 @@ var $currentroomchain = []; // This array contains all the standard views of the
 
 var currentviewindex;
 
-var startingarea = "room1"; // These will eventually be loaded from a config file
+var startingarea = "area1"; // These will eventually be loaded from a config file
 var startingroom = "kitchen";
 var startingdirection = "n";
 
@@ -217,7 +217,8 @@ function onLoadView() {
 
 	// add any relevant objects to the view
 	$currentview.find("object").each(function(){
-		var $objid = $(this).attr("id");
+		var $thisobj = $(this);
+		var $objid = $thisobj.attr("id");
 		var $objselector = "#" + $objid;
 		console.log("adding object " + $objid);
 		$(".game").append("<a href=\"#obj\" class=\"obj\" id=\"" + $objid + "\"></a>");//("<div class=\"obj\" id=\"" + objid + "></div>");
@@ -231,7 +232,18 @@ function onLoadView() {
 
 		$($objselector).click(function(){
 			console.log("object " + $objid + " was clicked.");
-
+			var $onclick = $thisobj.find("onclick");
+			if ($onclick.length) {
+				if ($onclick.attr("action") == "view") {
+					console.log("transition to view " + $onclick.attr("id"));
+				} else if ($onclick.attr("action") == "popup") {
+					console.log("popup with image: " + $onclick.attr("img"));
+				} else {
+					console.log("object " + $objid + " wants to perform an unknown action");
+				}
+			} else {
+				console.log("object " + $objid + " has no defined onclick action");
+			}
 		});
 	});
 }
