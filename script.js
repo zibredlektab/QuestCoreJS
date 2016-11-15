@@ -1,14 +1,14 @@
-var $area, $currentroom, $currentview;
+var $currentarea, $currentroom, $currentview;
 
-var currentviewindex = 0;
+var $currentroomchain = []; // This array contains all the standard views of the current room (ie, not object views)
+
+var currentviewindex;
 
 var startingarea = "room1"; // These will eventually be loaded from a config file
 var startingroom = "kitchen";
+var startingdirection = "n";
 
 $(document).ready(function(){
-
-
-	$("#left").addClass("objectviewnav");
 
 	// load the starting area
 	loadArea(startingarea);
@@ -50,9 +50,9 @@ function loadArea(areaName) {
 		url: areaName + ".xml",
 		dataType: "xml",
 		success: function(xml) {
-			$area = $(xml);
+			$currentarea = $(xml);
 
-			switchToRoomWithDirection(startingroom, "n");
+			switchToRoomWithDirection(startingroom, startingdirection);
 
 			console.log("area "+ areaName + " loaded");
 			console.log("currently in room " + $currentroom.attr("ID"));
@@ -107,10 +107,26 @@ function navToIndex(index) {
 
 	onLeaveView();
 
-	$currentview = $currentroom.find("view").eq(index);
+	$currentview = $currentroomchain[index];
+	currentviewindex = index;
 	$(".game").css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + $currentview.attr("dir") + ".png\")");
 
 	onLoadView();
+}
+
+function navToView(direction) {
+	// I don't know in what circumstance I'd ever call this function without a valid index, but just in case...
+
+	if (direction == undefined) {
+		console.log("index to navigate to was undefined, navigating to 0");
+		direction = "n";
+	}
+
+	console.log ("navigating to view " + direction);
+
+
+	navToIndex(getViewIndexFromDirection(direction));
+
 }
 
 
@@ -125,7 +141,7 @@ function switchToRoomWithDirection(roomID, viewdirection) {
 	var foundcurrentroom = false;
 
 	// pull out all of the room objects from the area file
-	$area.find("room").each(function(){
+	$currentarea.find("room").each(function(){
 		if (!foundcurrentroom && $(this).attr("ID") == roomID) {
 			// if this is the right ID, then we're done here
 			$currentroom = $(this);
@@ -137,9 +153,12 @@ function switchToRoomWithDirection(roomID, viewdirection) {
 	// make sure we actually found the requested room
 	if (!foundcurrentroom) {
 		alert("requested room doesn't exist in this area");
-	}
+	} else {
 
-	navToIndex(getViewIndexFromDirection(viewdirection));
+		populateRoomViewChain();
+
+		navToView(viewdirection);
+	}
 }
 
 // switchToRoom shortcut, so that we need not always specify a direction (usually, switching
@@ -150,7 +169,14 @@ function switchToRoom(roomID) {
 }
 
 
-
+// populateRoomChain builds an array of all standard (directional, non-object) views in a room
+function populateRoomViewChain() {
+	$currentroomchain = [];
+	$currentroom.find("view").each(function(){
+		console.log("adding " + $(this).attr("dir") + " to the room chain");
+		$currentroomchain.push($(this));
+	});
+}
 
 
 // getViewIndex takes the name of a view (usually a cardinal direction) and returns a
@@ -158,7 +184,7 @@ function switchToRoom(roomID) {
 function getViewIndexFromDirection(direction) {
 	var viewcount = 0;
 	var foundview = false;
-	$currentroom.find("view").each(function() {
+	$.each($currentroomchain, function() {
 		if (!foundview && $(this).attr("dir") == direction) {
 			foundview = true;
 			return false;
