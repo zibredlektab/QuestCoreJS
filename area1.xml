@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <area>
 	<room ID = "kitchen">
-		<view dir="n"></view>
-		<view dir="e">
+		<view id="n"></view>
+		<view id="e">
 			<object type="clickbox" id="safe" x="720" y="460" width="575" height="575">
 				<onclick action="view" id="safe"></onclick>
 			</object>
 		</view>
-		<view dir="s">
+		<view id="s">
 			<fwd-room>foyer</fwd-room>
 		</view>
-		<view dir="w">
+		<view id="w">
 			<object id="ink" x="620" y="505" width="75" height="81">
 				<onclick action="popup" img="ink" caption="it's an ink bottle"></onclick>
 			</object>
 		</view>
-		<objview id="safe"></objview>
+		<view type="object" id="safe"></view>
 	</room>
 	<room ID = "foyer">
-		<view dir="n">
+		<view id="n">
 			<fwd-room>kitchen</fwd-room>
 		</view>
-		<view dir="e"></view>
-		<view dir="s"></view>
-		<view dir="w"></view>
+		<view id="e"></view>
+		<view id="s"></view>
+		<view id="w"></view>
 	</room>
 </area>

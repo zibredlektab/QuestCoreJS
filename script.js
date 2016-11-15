@@ -38,6 +38,10 @@ $(document).ready(function(){
 		}
 	});
 
+	$("#back").click(function(){
+		navToIndex(currentviewindex);
+	});
+
 });
 
 
@@ -78,11 +82,11 @@ function turnTo(direction) {
 	} else if (direction == "left") {
 		currentviewindex--;
 		if (currentviewindex < 0) {
-			currentviewindex = $currentroom.find("view").length-1;
+			currentviewindex = $currentroomchain.length-1;
 		}
 	} else if (direction == "right") {
 		currentviewindex++;
-		if (currentviewindex >= $currentroom.find("view").length) {
+		if (currentviewindex >= $currentroomchain.length) {
 			currentviewindex = 0;
 		}
 	}
@@ -109,27 +113,41 @@ function navToIndex(index) {
 
 	$currentview = $currentroomchain[index];
 	currentviewindex = index;
-	$(".game").css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + $currentview.attr("dir") + ".png\")");
+	$(".game").css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + $currentview.attr("id") + ".png\")");
 
 	onLoadView();
 }
 
-function navToView(direction) {
+function navToView(viewid) {
 	// I don't know in what circumstance I'd ever call this function without a valid index, but just in case...
 
-	if (direction == undefined) {
+	if (viewid == undefined) {
 		console.log("index to navigate to was undefined, navigating to 0");
-		direction = "n";
+		viewid = "n";
 	}
 
-	console.log ("navigating to view " + direction);
+	console.log ("navigating to view " + viewid);
 
 
-	navToIndex(getViewIndexFromDirection(direction));
+	navToIndex(getViewIndexFromDirection(viewid));
 
 }
 
 
+function navToObjView(onclick) {
+	var viewid = onclick.attr("id");
+
+	onLeaveView();
+
+	$(".game").css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + viewid + ".png\")");
+
+	$("#back").css("display", "block");
+}
+
+
+function makePopUp(onclick) {
+
+}
 
 
 // switchToRoomWithDirection assigns $customroom to the room data matching the requested ID
@@ -164,8 +182,8 @@ function switchToRoomWithDirection(roomID, viewdirection) {
 // switchToRoom shortcut, so that we need not always specify a direction (usually, switching
 // rooms will take us to the same direction in a new room)
 function switchToRoom(roomID) {
-	switchToRoomWithDirection(roomID, $currentview.attr("dir"));
-	console.log("switching to room " + roomID + " with view " + $currentview.attr("dir"));
+	switchToRoomWithDirection(roomID, $currentview.attr("id"));
+	console.log("switching to room " + roomID + " with view " + $currentview.attr("id"));
 }
 
 
@@ -173,8 +191,10 @@ function switchToRoom(roomID) {
 function populateRoomViewChain() {
 	$currentroomchain = [];
 	$currentroom.find("view").each(function(){
-		console.log("adding " + $(this).attr("dir") + " to the room chain");
-		$currentroomchain.push($(this));
+		if ($(this).attr("type") != "object") {
+			console.log("adding " + $(this).attr("id") + " to the room chain");
+			$currentroomchain.push($(this));
+		}
 	});
 }
 
@@ -185,7 +205,7 @@ function getViewIndexFromDirection(direction) {
 	var viewcount = 0;
 	var foundview = false;
 	$.each($currentroomchain, function() {
-		if (!foundview && $(this).attr("dir") == direction) {
+		if (!foundview && $(this).attr("id") == direction) {
 			foundview = true;
 			return false;
 		}
@@ -212,10 +232,9 @@ function onLoadView() {
 		$("#forward").css("display", "none");
 	}
 
-	//
 
 
-	// add any relevant objects to the view
+	// add any relevant objects to the view (maybe encapsulate this)
 	$currentview.find("object").each(function(){
 		var $thisobj = $(this);
 		var $objid = $thisobj.attr("id");
@@ -236,8 +255,10 @@ function onLoadView() {
 			if ($onclick.length) {
 				if ($onclick.attr("action") == "view") {
 					console.log("transition to view " + $onclick.attr("id"));
+					navToObjView($onclick);
 				} else if ($onclick.attr("action") == "popup") {
 					console.log("popup with image: " + $onclick.attr("img"));
+					makePopUp($onclick);
 				} else {
 					console.log("object " + $objid + " wants to perform an unknown action");
 				}
