@@ -4,12 +4,14 @@
 	background-size: 100%;
 	width: 640px;
 	height: 360px;
-	margin: auto;
 	cursor: url(cursor/default.png) 4 5, default;
+	position: absolute;
+	margin: 0 auto;
+	left: 0; right: 0;
 }
 
 .nav {
-	position: relative;
+	position: absolute;
 	height: 100%;
 	width: 20%;
 	color: transparent;
@@ -18,12 +20,12 @@
 }
 
 #left {
-	float: left;
+	left: 0;
 	cursor: url(cursor/left.png) 5 16, w-resize;
 }
 
 #right {
-	float: right;
+	right: 0;
 	cursor: url(cursor/right.png) 27 15, e-resize;
 }
 
