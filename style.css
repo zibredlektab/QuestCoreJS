@@ -1,4 +1,3 @@
-
 .game {
 	background-image: url("");
 	background-size: 100%;
@@ -8,6 +7,52 @@
 	position: absolute;
 	margin: 0 auto;
 	left: 0; right: 0;
+}
+
+.popup {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,.5);
+}
+
+#popupbg {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.popup-contents {
+	position: absolute;
+	display: inline-block;
+	height: 60%;
+	width: 60%;
+	margin: auto;
+	left: 0; right: 0; top: 0; bottom: 0;
+	pointer-events: none;
+}
+
+#popup-object {
+	padding-top: 10%;
+	display: block;
+	margin: auto;
+	left: 0; right: 0; top: 0; bottom: 0;
+}
+
+
+.popup-caption {
+	display: block;
+	text-align: center;
+	font-family: sans-serif;
+	text-shadow: 0 0 4px white, 1px 1px 4px white, -1px 1px 4px white, -1px -1px 4px white, 1px -1px 4px white;
+	font-size: 24pt;
+
+/*	margin: auto;
+	left: 0; right: 0; top: 0; bottom: 0;
+*/}
+
+a {
+	cursor: url(cursor/point.png) 11 3, pointer;
 }
 
 .nav {
@@ -53,7 +98,6 @@
 }
 
 .obj {
-	cursor: url(cursor/point.png) 11 3, pointer;
 	display: block;
 	position: relative;
 	background-repeat: no-repeat;
