@@ -32,6 +32,10 @@ $(document).ready(function(){
 		navClick($(this));
 	});
 
+	$("#popup-bg").click(function(){
+		hidePopUp();
+	});
+
 	// forward nav button logic
 	$("#forward").click(function(){
 		if ($currentview.has("fwd-room").length > 0) {
@@ -280,7 +284,7 @@ function onLoadView() {
 		var $objid = $thisobj.attr("id");
 		var $objselector = "#" + $objid;
 		console.log("adding object " + $objid);
-		$(".game").append("<a href=\"#obj\" class=\"obj\" id=\"" + $objid + "\"></a>");//("<div class=\"obj\" id=\"" + objid + "></div>");
+		$(".object-container").append("<a href=\"#obj\" class=\"obj\" id=\"" + $objid + "\"></a>");//("<div class=\"obj\" id=\"" + objid + "></div>");
 		if ($(this).attr("type") != "clickbox") {
 			$($objselector).css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + $objid + ".png\")");
 		}
@@ -375,16 +379,25 @@ function switchToRoom(roomID) {
 
 
 // ---------------------------------------------------------------------------------------
-// HELPER FUNCTIONS
+// POPUP FUNCTIONS
 // ---------------------------------------------------------------------------------------
 
 
 // makePopUp takes an onclick object (as defined in xml) and constructs a popup overlay from it
 function makePopUp(onclick) {
-
+	$("#popup-object").attr("src", "img/" + $currentroom.attr("ID") + "-" + onclick.attr("img") + ".png");
+	$(".popup-contents").append("<p class=\"popup-caption\">" + onclick.attr("caption") + "</p>");
+	$(".popup").fadeIn(200);
 }
 
 
+// hidePopUp clears out the image and caption from the popup display, and hides the display
+function hidePopUp() {
+	$(".popup").fadeOut(200, function(){
+		$("#popup-object").attr("src", "");
+		$(".popup-caption").remove();
+	});
+}
 
 
 
