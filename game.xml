@@ -7,12 +7,18 @@
 
 
 	<switches>
-		<switch id="digit0">0</switch>
-		<switch id="digit1">0</switch>
-		<switch id="digit2">0</switch>
-		<switch id="digit3">0</switch>
-		<switch id="digit4">0</switch>
-		<switch id="digit5">0</switch>
+		<switch id="digit0" min="0" max="9">0</switch>
+		<switch id="digit1" min="0" max="9">0</switch>
+		<switch id="digit2" min="0" max="9">0</switch>
+		<switch id="digit3" min="0" max="9">0</switch>
+		<switch id="digit4" min="0" max="9">0</switch>
+		<switch id="digit5" min="0" max="9">0</switch>
 	</switches>
 
 </QuestCoreGame>
+
+<!-- I'll need either a separate structure to store switch attributes, or the switch structure
+	needs to become multi-dimensional (ids map to objects which map "value" and "attributes",
+	which is an object mapping ids to values)
+
+	only the switch values need to be stored when saving, though -->
