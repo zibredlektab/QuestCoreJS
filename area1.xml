@@ -16,8 +16,8 @@
 			</object>
 		</view>
 		<view type="object" id="safe">
-			<object type="clickbox" id="digit0-up" x="200" y="200" width="20" height="20">
-				<onclick action="add" variable="digit0" amount="1"></onclick>
+			<object type="clickbox" id="digit0-up" x="720" y="460" width="575" height="575">
+				<onclick action="add" switch="digit0" value="1"></onclick>
 			</object>
 		</view>
 	</room>
@@ -30,3 +30,17 @@
 		<view id="w"></view>
 	</room>
 </area>
+
+<!-- valid onlcick actions are:
+
+* view *
+	navigates the view to an object view (providing a "back" nav button)
+
+* popup *
+	creates a popup box with an item icon & caption
+
+* add, subtract, set *
+	basic manipulations of the specified switch
+
+
+-->
