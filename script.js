@@ -342,7 +342,7 @@ function onLoadView() {
 		var $thisobj = $(this);
 		var $objid = $thisobj.attr("id");
 		var $objselector = "#" + $objid;
-		console.log("adding object " + $objid + " at " + $thisobj.attr("x") + ", " + $thisobj.attr("y") );
+		console.log("adding object " + $objid + " at " + $thisobj.attr("x") + ", " + $thisobj.attr("y"));
 		$(".object-container").append("<a href=\"#obj\" class=\"obj\" id=\"" + $objid + "\"></a>");//("<div class=\"obj\" id=\"" + objid + "></div>");
 		if ($(this).attr("type") != "clickbox") {
 			$($objselector).css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + $objid + ".png\")");
@@ -364,10 +364,11 @@ function onLoadView() {
 					makePopUp($onclick);
 				} else if ($onclick.attr("action") == "add") {
 					console.log("adding " + $onclick.attr("value") + " to switch " + $onclick.attr("switch"));
-
+					$switches[$onclick.attr("switch")] = parseInt($switches[$onclick.attr("switch")]) + parseInt($onclick.attr("value")); // just pray to god the user set everything up as integers or i don't even know what happens here but it probably fails
+					console.log("value of switch " + $onclick.attr("switch") + " is now " + $switches[$onclick.attr("switch")]);
 
 				} else {
-					console.log("object " + $objid + " wants to perform an unknown action");
+					console.log("object " + $objid + " wants to perform an unknown action (" + $onclick.attr("action") + ")");
 				}
 			} else {
 				console.log("object " + $objid + " has no defined onclick action");
