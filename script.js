@@ -4,10 +4,6 @@
 
 var gameconfigname = "game";
 
-var startingarea;
-var startingroom;
-var startingdirection;
-
 
 
 
@@ -17,11 +13,17 @@ var startingdirection;
 // INIT
 // ---------------------------------------------------------------------------------------
 
+
+// starting settings (retrieved from the config file)
+var startingarea;
+var startingroom;
+var startingdirection;
+
+
 var $gameconfig, $currentarea, $currentroom, $currentview;
 
 var $currentroomviews = {}; // This object maps room ids to their views
 var $currentroomchain = []; // This array contains all the standard views of the current room (ie, not object views)
-
 var currentchainindex = 0;
 
 
