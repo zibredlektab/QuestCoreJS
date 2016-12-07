@@ -342,6 +342,7 @@ function onLoadView() {
 		var $thisobj = $(this);
 		var $objid = $thisobj.attr("id");
 		var $objselector = "#" + $objid;
+		var hasonclick;
 
 		console.log("adding object " + $objid + " at " + $thisobj.attr("x") + ", " + $thisobj.attr("y"));
 
@@ -351,9 +352,11 @@ function onLoadView() {
 		var tag = "";
 		var attr = "";
 		if ($(this).find("onclick").length) {
+			hasonclick = true;
 			tag = "a";
 			attr = "href=\"#obj\"";
 		} else {
+			hasonclick = false;
 			tag = "div";
 		}
 
@@ -384,18 +387,20 @@ function onLoadView() {
 		}
 
 
-
+		// position the object
 		$($objselector).css("width", $(this).attr("width") / 3); // these should all eventually scale dynamically with the canvas, right now i am using a canvas scaled to 1/3 the size of the background images (1920x1080)
 		$($objselector).css("height", $(this).attr("height") / 3);
 		$($objselector).css("top", $(this).attr("y") / 3);
 		$($objselector).css("left", $(this).attr("x") / 3);
 
 
+		// what happens when the object is clicked
+		if (hasonclick) {
+			$($objselector).click(function(){
+				console.log("object " + $objid + " was clicked.");
 
-		$($objselector).click(function(){
-			console.log("object " + $objid + " was clicked.");
-			var $onclick = $thisobj.find("onclick");
-			if ($onclick.length) {
+				var $onclick = $thisobj.find("onclick");
+
 				if ($onclick.attr("action") == "view") {
 					console.log("transitioning to object view " + $onclick.attr("id"));
 					navToObjView($onclick);
@@ -420,10 +425,8 @@ function onLoadView() {
 				} else {
 					console.log("object " + $objid + " wants to perform an unknown action (" + $onclick.attr("action") + ")");
 				}
-			} else {
-				console.log("object " + $objid + " has no defined onclick action");
-			}
-		});
+			});
+		}
 	});
 }
 
