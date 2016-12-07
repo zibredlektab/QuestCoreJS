@@ -342,7 +342,7 @@ function onLoadView() {
 		var $thisobj = $(this);
 		var $objid = $thisobj.attr("id");
 		var $objselector = "#" + $objid;
-		console.log("adding object " + $objid + " at " + $thisobj.attr("x") + ", " + $thisobj.attr("y"));
+		console.log("adding object " + $objid + " at " + $thisobj.attr("x") + ", " + $thisobj.attr("y") );
 		$(".object-container").append("<a href=\"#obj\" class=\"obj\" id=\"" + $objid + "\"></a>");//("<div class=\"obj\" id=\"" + objid + "></div>");
 		if ($(this).attr("type") != "clickbox") {
 			$($objselector).css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + $objid + ".png\")");
