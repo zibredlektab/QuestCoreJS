@@ -19,6 +19,9 @@
 			<object type="clickbox" id="digit0-up" x="720" y="460" width="575" height="575">
 				<onclick action="add" switch="digit0" value="1"></onclick>
 			</object>
+			<object type="text" id="digit0-text" x="720" y="460">
+				<text switch="digit0"></text>
+			</object>
 		</view>
 	</room>
 	<room ID = "foyer">
@@ -31,7 +34,22 @@
 	</room>
 </area>
 
-<!-- valid onlcick actions are:
+
+<!-- valid object types are:
+
+* (default) *
+	if no type is specified, objects are an image (the source image is named "[room id]-[object id].png" for the time being)
+
+* clickbox *
+	an invisible square, providing an onclick action (useful when objects are actually drawn into the background image)
+
+* text *
+	draws dynamic text on screen, does not provide an onclick (at the moment. this is stupid though, all objects should have the option to have an onclick, and if one isn't specified than it should not be clickable...)
+	a <text> object should be included, with either a static string or a "switch" attribute, in which case the value of the specified switch will be used. Eventually I want to be able to specify basic styling from here.
+
+
+
+valid onlcick actions are:
 
 * view *
 	navigates the view to an object view (providing a "back" nav button)

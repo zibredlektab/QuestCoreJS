@@ -344,13 +344,37 @@ function onLoadView() {
 		var $objselector = "#" + $objid;
 		console.log("adding object " + $objid + " at " + $thisobj.attr("x") + ", " + $thisobj.attr("y"));
 		$(".object-container").append("<a href=\"#obj\" class=\"obj\" id=\"" + $objid + "\"></a>");//("<div class=\"obj\" id=\"" + objid + "></div>");
-		if ($(this).attr("type") != "clickbox") {
+
+
+		// what kind of object are we dealing with here?
+		if ($(this).attr("type") == "text") {
+			// this is a text object
+			var $textsettings = $(this).find("text");
+			var textvalue = "";
+
+			if ($textsettings.attr("switch")) {
+				// should get value from a switch
+				textvalue = $switches[$textsettings.attr("switch")];
+			} else {
+				// value is a static string
+				textvalue = $textsettings.text();
+			}
+
+			$($objselector).append(textvalue);
+
+		} else if ($(this).attr("type") != "clickbox"){
+			// this is an undefined type, or it's just unspecified. treat it as an image.
 			$($objselector).css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + $objid + ".png\")");
 		}
-		$($objselector).css("width", $(this).attr("width") / 3); // these should all eventually scale dynamically with the canvas
+
+
+
+		$($objselector).css("width", $(this).attr("width") / 3); // these should all eventually scale dynamically with the canvas, right now i am using a canvas scaled to 1/3 the size of the background images (1920x1080)
 		$($objselector).css("height", $(this).attr("height") / 3);
 		$($objselector).css("top", $(this).attr("y") / 3);
 		$($objselector).css("left", $(this).attr("x") / 3);
+
+
 
 		$($objselector).click(function(){
 			console.log("object " + $objid + " was clicked.");
