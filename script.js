@@ -118,8 +118,23 @@ function loadConfig(gamename) {
 function populateSwitches() {
 	$gameconfig.find("switch").each(function(){
 		var switchid = $(this).attr("id");
-		$switches[switchid] = $(this).text();
-		//console.log("adding switch " + switchid + " with value of " + $(this).text() + " to the switch list");
+		$switches[switchid] = {
+			internalvalue: $(this).text(),
+			min: $(this).attr("min"),
+			max: $(this).attr("max"),
+			listener: function(val) {},
+			set value(val) {
+				this.internalvalue = val;
+				this.listener(val);
+			},
+			get value() {
+				return this.internalvalue;
+			},
+			registerListener: function(newlistener) {
+				this.listener = newlistener;
+			}
+		};
+		console.log("adding switch " + switchid + " with value of " + $switches[switchid].value + " to the switch list");
 	});
 
 }
@@ -372,7 +387,14 @@ function onLoadView() {
 
 			if ($textsettings.attr("switch")) {
 				// should get value from a switch
-				textvalue = $switches[$textsettings.attr("switch")]; // currently, this only retrieves the value when it is first drawn. it won't update unless it is removed and drawn again.
+				textvalue = $switches[$textsettings.attr("switch")].value;
+
+				// register a listener function to re-draw the text if the switch changes
+				$switches[$textsettings.attr("switch")].registerListener(function(){
+					$($objselector).empty();
+					$($objselector).append($switches[$textsettings.attr("switch")].value);
+				});
+
 			} else {
 				// value is a static string
 				textvalue = $textsettings.text();
@@ -408,19 +430,22 @@ function onLoadView() {
 					console.log("popup with image: " + $onclick.attr("img"));
 					makePopUp($onclick);
 				} else if ($onclick.attr("action") == "add") {
-					console.log("adding " + $onclick.attr("value") + " to switch " + $onclick.attr("switch"));
-					$switches[$onclick.attr("switch")] = parseInt($switches[$onclick.attr("switch")]) + parseInt($onclick.attr("value")); // just pray to god the user set everything up as integers or i don't even know what happens here but it probably fails
-					console.log("value of switch " + $onclick.attr("switch") + " is now " + $switches[$onclick.attr("switch")]);
+					var switchname = $onclick.attr("switch");
+					console.log("adding " + $onclick.attr("value") + " to switch " + switchname);
+					$switches[switchname].value = parseInt($switches[switchname].value) + parseInt($onclick.attr("value")); // just pray to god the user set everything up as integers or i don't even know what happens here but it probably fails
+					console.log("value of switch " + switchname + " is now " + $switches[switchname].value);
 
 				} else if ($onclick.attr("action") == "subtract") {
-					console.log("subtracting " + $onclick.attr("value") + " from switch " + $onclick.attr("switch"));
-					$switches[$onclick.attr("switch")] = parseInt($switches[$onclick.attr("switch")]) - parseInt($onclick.attr("value"));
-					console.log("value of switch " + $onclick.attr("switch") + " is now " + $switches[$onclick.attr("switch")]);
+					var switchname = $onclick.attr("switch");
+					console.log("subtracting " + $onclick.attr("value") + " from switch " + switchname);
+					$switches[switchname].value = parseInt($switches[switchname].value) - parseInt($onclick.attr("value"));
+					console.log("value of switch " + switchname + " is now " + $switches[switchname].value);
 
 				} else if ($onclick.attr("action") == "set") {
-					console.log("adding " + $onclick.attr("value") + " to switch " + $onclick.attr("switch"));
-					$switches[$onclick.attr("switch")] = parseInt($onclick.attr("value"));
-					console.log("value of switch " + $onclick.attr("switch") + " is now " + $switches[$onclick.attr("switch")]);
+					var switchname = $onclick.attr("switch");
+					console.log("adding " + $onclick.attr("value") + " to switch " + switchname);
+					$switches[switchname].value = parseInt($onclick.attr("value"));
+					console.log("value of switch " + switchname + " is now " + $switches[switchname].value);
 
 				} else {
 					console.log("object " + $objid + " wants to perform an unknown action (" + $onclick.attr("action") + ")");
