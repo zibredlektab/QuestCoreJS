@@ -367,6 +367,16 @@ function onLoadView() {
 					$switches[$onclick.attr("switch")] = parseInt($switches[$onclick.attr("switch")]) + parseInt($onclick.attr("value")); // just pray to god the user set everything up as integers or i don't even know what happens here but it probably fails
 					console.log("value of switch " + $onclick.attr("switch") + " is now " + $switches[$onclick.attr("switch")]);
 
+				} else if ($onclick.attr("action") == "subtract") {
+					console.log("subtracting " + $onclick.attr("value") + " from switch " + $onclick.attr("switch"));
+					$switches[$onclick.attr("switch")] = parseInt($switches[$onclick.attr("switch")]) - parseInt($onclick.attr("value"));
+					console.log("value of switch " + $onclick.attr("switch") + " is now " + $switches[$onclick.attr("switch")]);
+
+				} else if ($onclick.attr("action") == "set") {
+					console.log("adding " + $onclick.attr("value") + " to switch " + $onclick.attr("switch"));
+					$switches[$onclick.attr("switch")] = parseInt($onclick.attr("value"));
+					console.log("value of switch " + $onclick.attr("switch") + " is now " + $switches[$onclick.attr("switch")]);
+
 				} else {
 					console.log("object " + $objid + " wants to perform an unknown action (" + $onclick.attr("action") + ")");
 				}
