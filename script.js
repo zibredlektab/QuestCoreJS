@@ -360,6 +360,7 @@ function onLoadView() {
 				textvalue = $textsettings.text();
 			}
 
+			$($objselector).addClass("text-obj");
 			$($objselector).append(textvalue);
 
 		} else if ($(this).attr("type") != "clickbox"){
