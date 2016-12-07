@@ -337,7 +337,7 @@ function onLoadView() {
 		$("#left, #right").removeClass("objectviewnav");
 	}
 
-	// add any relevant objects to the view (maybe encapsulate this)
+	// add any relevant objects to the view (definitely encapsulate this at some point)
 	$currentview.find("object").each(function(){
 		var $thisobj = $(this);
 		var $objid = $thisobj.attr("id");
@@ -394,7 +394,7 @@ function onLoadView() {
 		$($objselector).css("left", $(this).attr("x") / 3);
 
 
-		// what happens when the object is clicked
+		// what happens when the object is clicked (if it has an onclick)
 		if (hasonclick) {
 			$($objselector).click(function(){
 				console.log("object " + $objid + " was clicked.");
