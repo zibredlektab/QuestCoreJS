@@ -26,6 +26,8 @@ var $currentroomviews = {}; // This object maps room ids to their views
 var $currentroomchain = []; // This array contains all the standard views of the current room (ie, not object views)
 var currentchainindex = 0;
 
+var $switches = {}; // this object maps switch ids to their values, and is initially populated from the config file
+
 
 $(document).ready(function(){
 
@@ -97,6 +99,10 @@ function loadConfig(gamename) {
 			startingdirection = $gameconfig.find("starting-direction").text();
 
 
+			// set up the game switches
+			populateSwitches();
+
+
 			// load the starting area
 			loadArea(startingarea);
 
@@ -108,6 +114,15 @@ function loadConfig(gamename) {
 	});
 }
 
+// populateSwitches reads the default state of all game switches and stores them in an object
+function populateSwitches() {
+	$gameconfig.find("switch").each(function(){
+		var switchid = $(this).attr("id");
+		$switches[switchid] = $(this).text();
+		//console.log("adding switch " + switchid + " with value of " + $(this).text() + " to the switch list");
+	});
+
+}
 
 // loadArea loads a set of area data (various rooms within an area, their views, etc) from
 // an XML file named [areaName].xml. It then navigates to index 0 in that room (for now)
