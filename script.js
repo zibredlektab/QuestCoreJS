@@ -342,8 +342,23 @@ function onLoadView() {
 		var $thisobj = $(this);
 		var $objid = $thisobj.attr("id");
 		var $objselector = "#" + $objid;
+
 		console.log("adding object " + $objid + " at " + $thisobj.attr("x") + ", " + $thisobj.attr("y"));
-		$(".object-container").append("<a href=\"#obj\" class=\"obj\" id=\"" + $objid + "\"></a>");//("<div class=\"obj\" id=\"" + objid + "></div>");
+
+
+		// use <a> if it is clickable (has an onclick child object)
+		// otherwise, make it a <div>
+		var tag = "";
+		var attr = "";
+		if ($(this).find("onclick").length) {
+			tag = "a";
+			attr = "href=\"#obj\"";
+		} else {
+			tag = "div";
+		}
+
+		// put the object in the scene
+		$(".object-container").append("<" + tag + " " + attr + " class=\"obj\" id=\"" + $objid + "\"></" + tag + ">");
 
 
 		// what kind of object are we dealing with here?
@@ -354,7 +369,7 @@ function onLoadView() {
 
 			if ($textsettings.attr("switch")) {
 				// should get value from a switch
-				textvalue = $switches[$textsettings.attr("switch")];
+				textvalue = $switches[$textsettings.attr("switch")]; // currently, this only retrieves the value when it is first drawn. it won't update unless it is removed and drawn again.
 			} else {
 				// value is a static string
 				textvalue = $textsettings.text();
@@ -364,7 +379,7 @@ function onLoadView() {
 			$($objselector).append(textvalue);
 
 		} else if ($(this).attr("type") != "clickbox"){
-			// this is an undefined type, or it's just unspecified. treat it as an image.
+			// this is not a text object or a clickbox, so treat it as an image.
 			$($objselector).css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + $objid + ".png\")");
 		}
 
