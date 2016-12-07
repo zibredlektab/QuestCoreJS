@@ -15,7 +15,11 @@
 				<onclick action="popup" img="ink" caption="it's an ink bottle"></onclick>
 			</object>
 		</view>
-		<view type="object" id="safe"></view>
+		<view type="object" id="safe">
+			<object type="clickbox" id="digit0-up" x="200" y="200" width="20" height="20">
+				<onclick action="add" variable="digit0" amount="1"></onclick>
+			</object>
+		</view>
 	</room>
 	<room ID = "foyer">
 		<view id="n">

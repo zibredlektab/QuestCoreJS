@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuestCoreGame>
+	<title>ValentinesQuest</title>
+	<starting-area>area1</starting-area>
+	<starting-room>kitchen</starting-room>
+	<starting-direction>n</starting-direction>
+
+
+	<switches>
+		<switch id="digit0">0</switch>
+		<switch id="digit1">0</switch>
+		<switch id="digit2">0</switch>
+		<switch id="digit3">0</switch>
+		<switch id="digit4">0</switch>
+		<switch id="digit5">0</switch>
+	</switches>
+
+</QuestCoreGame>

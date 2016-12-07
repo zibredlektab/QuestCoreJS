@@ -2,9 +2,11 @@
 // CONFIG
 // ---------------------------------------------------------------------------------------
 
-var startingarea = "area1"; // These will eventually be loaded from a config file
-var startingroom = "kitchen";
-var startingdirection = "n";
+var gameconfigname = "game";
+
+var startingarea;
+var startingroom;
+var startingdirection;
 
 
 
@@ -15,7 +17,7 @@ var startingdirection = "n";
 // INIT
 // ---------------------------------------------------------------------------------------
 
-var $currentarea, $currentroom, $currentview;
+var $gameconfig, $currentarea, $currentroom, $currentview;
 
 var $currentroomviews = {}; // This object maps room ids to their views
 var $currentroomchain = []; // This array contains all the standard views of the current room (ie, not object views)
@@ -25,9 +27,12 @@ var currentchainindex = 0;
 
 $(document).ready(function(){
 
-	// load the starting area
-	loadArea(startingarea);
+	// load the config file for this game
+	loadConfig(gameconfigname);
 
+
+
+	// button stuff
 	$(".nav").click(function(){
 		navClick($(this));
 	});
@@ -50,6 +55,8 @@ $(document).ready(function(){
 		}
 	});
 
+
+	// debug outline checkbox
 	$("#debug").click(function() {
 		if ($(this).prop("checked")) {
 			$("body").prepend("<style>* { border: 2px dotted black; }</style>");
@@ -64,6 +71,41 @@ $(document).ready(function(){
 // ---------------------------------------------------------------------------------------
 // SETUP FUNCTIONS
 // ---------------------------------------------------------------------------------------
+
+// loadConfig loads configuration information for this game, to kick everything off.
+function loadConfig(gamename) {
+	$.ajax({
+		type: "GET",
+		url: gamename + ".xml",
+		dataType: "xml",
+		success: function(xml) {
+
+			$gameconfig = $(xml);
+
+			console.log("game " + $gameconfig.find("title").text() + " loaded");
+
+
+			// set the window title to the game title
+			$("head").append("<title>" + $gameconfig.find("title").text() + "</title>");
+
+
+			// set up the config stuff
+			startingarea = $gameconfig.find("starting-area").text();
+			startingroom = $gameconfig.find("starting-room").text();
+			startingdirection = $gameconfig.find("starting-direction").text();
+
+
+			// load the starting area
+			loadArea(startingarea);
+
+		},
+		error: function (xhr, ajaxOptions, thrownError) {
+			console.log("encountered an error parsing game file " + gamename + ".xml")
+        	alert(thrownError);
+      	}
+	});
+}
+
 
 // loadArea loads a set of area data (various rooms within an area, their views, etc) from
 // an XML file named [areaName].xml. It then navigates to index 0 in that room (for now)
@@ -80,7 +122,7 @@ function loadArea(areaName) {
 			switchToRoomWithDirection(startingroom, startingdirection);
 		},
 		error: function (xhr, ajaxOptions, thrownError) {
-			console.log("encountered an error parsing + " + areaName + ".xml")
+			console.log("encountered an error parsing area file + " + areaName + ".xml")
         	alert(thrownError);
       	}
 	});
