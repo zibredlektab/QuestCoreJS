@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <area>
-	<room ID = "kitchen">
+	<room id="kitchen">
 		<view id="n"></view>
 		<view id="e">
 			<object type="clickbox" id="safe" x="720" y="460" width="575" height="575">
@@ -24,7 +24,7 @@
 			</object>
 		</view>
 	</room>
-	<room ID = "foyer">
+	<room id="foyer">
 		<view id="n">
 			<fwd-room>kitchen</fwd-room>
 		</view>

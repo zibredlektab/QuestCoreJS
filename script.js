@@ -265,7 +265,7 @@ function navToView(viewobject) {
 
 	$currentview = viewobject;
 
-	changeBackgroundImage($currentroom.attr("ID"), $currentview.attr("id"));
+	changeBackgroundImage($currentroom.attr("id"), $currentview.attr("id"));
 
 	onLoadView();
 
@@ -312,7 +312,7 @@ function navToViewByDirection(direction) {
 
 // navToViewByName navigates using a specific id, this should really only be used for
 // object views, because it does not change the current view index.
-function navToViewByID(viewid) {
+function navToViewByid(viewid) {
 
 	if (viewid == undefined) {
 		console.log("id to navigate to was undefined, navigating to first view in this room");
@@ -326,7 +326,7 @@ function navToViewByID(viewid) {
 
 // navToObjView takes an onclick object (as defined in xml) and begins navigating to the specified view
 function navToObjView(onclick) {
-	navToViewByID(onclick.attr("id"));
+	navToViewByid(onclick.attr("id"));
 }
 
 
@@ -352,107 +352,116 @@ function onLoadView() {
 		$("#left, #right").removeClass("objectviewnav");
 	}
 
-	// add any relevant objects to the view (definitely encapsulate this at some point)
+	// add any relevant objects to the view
 	$currentview.find("object").each(function(){
-		var $thisobj = $(this);
-		var $objid = $thisobj.attr("id");
-		var $objselector = "#" + $objid;
-		var hasonclick;
+		addObjectToView($(this));
+	});
+}
 
-		console.log("adding object " + $objid + " at " + $thisobj.attr("x") + ", " + $thisobj.attr("y"));
+// addObjectToView takes a js object with settings for an object (clickable image, clickbox,
+// or dynamic text) with settings defining the object as it is seen by default, and what
+// happens when the object is clicked.
+function addObjectToView(objecttoadd) {
+	var $objsettings = objecttoadd;
+	var $objid = $objsettings.attr("id");
+	var hasonclick;
+
+	console.log("adding object " + $objid + " at " + $objsettings.attr("x") + ", " + $objsettings.attr("y"));
+
+	// use <a> if it is clickable (has an onclick child object)
+	// otherwise, make it a <div>
+	// (the attr variable is for the href= value if it is clickable)
+	var tag = "";
+	var attr = "";
+
+	if ($objsettings.find("onclick").length) {
+		hasonclick = true;
+		tag = "a";
+		attr = "href=\"#obj\"";
+	} else {
+		hasonclick = false;
+		tag = "div";
+	}
+
+	// put the object in the scene
+	$(".object-container").append("<" + tag + " " + attr + " class=\"obj\" id=\"" + $objid + "\"></" + tag + ">");
+
+	var obj = $("#" + $objid);
 
 
-		// use <a> if it is clickable (has an onclick child object)
-		// otherwise, make it a <div>
-		var tag = "";
-		var attr = "";
-		if ($(this).find("onclick").length) {
-			hasonclick = true;
-			tag = "a";
-			attr = "href=\"#obj\"";
+	// what kind of object are we dealing with here?
+	if ($objsettings.attr("type") == "text") {
+		// this is a text object
+		var $textsettings = $objsettings.find("text");
+		var textvalue = "";
+
+		if ($textsettings.attr("switch")) {
+			// should get value from a switch
+			textvalue = $switches[$textsettings.attr("switch")].value;
+
+			// register a listener function to re-draw the text if the switch changes
+			$switches[$textsettings.attr("switch")].registerListener(function(){
+				obj.empty();
+				obj.append($switches[$textsettings.attr("switch")].value);
+			});
+
 		} else {
-			hasonclick = false;
-			tag = "div";
+			// value is a static string
+			textvalue = $textsettings.text();
 		}
 
-		// put the object in the scene
-		$(".object-container").append("<" + tag + " " + attr + " class=\"obj\" id=\"" + $objid + "\"></" + tag + ">");
+		obj.addClass("text-obj");
+		obj.append(textvalue);
+
+	} else if ($objsettings.attr("type") != "clickbox"){
+		// this is not a text object or a clickbox, so treat it as an image.
+		obj.css("background-image", "url(\"img/" + $currentroom.attr("id") + "-" + $objid + ".png\")");
+	}
 
 
-		// what kind of object are we dealing with here?
-		if ($(this).attr("type") == "text") {
-			// this is a text object
-			var $textsettings = $(this).find("text");
-			var textvalue = "";
+	// position the object
+	obj.css("width", $objsettings.attr("width") / 3); // these should all eventually scale dynamically with the canvas, right now i am using a canvas scaled to 1/3 the size of the background images (1920x1080)
+	obj.css("height", $objsettings.attr("height") / 3);
+	obj.css("top", $objsettings.attr("y") / 3);
+	obj.css("left", $objsettings.attr("x") / 3);
 
-			if ($textsettings.attr("switch")) {
-				// should get value from a switch
-				textvalue = $switches[$textsettings.attr("switch")].value;
 
-				// register a listener function to re-draw the text if the switch changes
-				$switches[$textsettings.attr("switch")].registerListener(function(){
-					$($objselector).empty();
-					$($objselector).append($switches[$textsettings.attr("switch")].value);
-				});
+	// what happens when the object is clicked (if it has an onclick)
+	if (hasonclick) {
+		obj.click(function(){
+			console.log("object " + $objid + " was clicked.");
+
+			var $onclick = $objsettings.find("onclick");
+
+			if ($onclick.attr("action") == "view") {
+				console.log("transitioning to object view " + $onclick.attr("id"));
+				navToObjView($onclick);
+			} else if ($onclick.attr("action") == "popup") {
+				console.log("popup with image: " + $onclick.attr("img"));
+				makePopUp($onclick);
+			} else if ($onclick.attr("action") == "add") {
+				var switchname = $onclick.attr("switch");
+				console.log("adding " + $onclick.attr("value") + " to switch " + switchname);
+				$switches[switchname].value = parseInt($switches[switchname].value) + parseInt($onclick.attr("value")); // just pray to god the user set everything up as integers or i don't even know what happens here but it probably fails
+				console.log("value of switch " + switchname + " is now " + $switches[switchname].value);
+
+			} else if ($onclick.attr("action") == "subtract") {
+				var switchname = $onclick.attr("switch");
+				console.log("subtracting " + $onclick.attr("value") + " from switch " + switchname);
+				$switches[switchname].value = parseInt($switches[switchname].value) - parseInt($onclick.attr("value"));
+				console.log("value of switch " + switchname + " is now " + $switches[switchname].value);
+
+			} else if ($onclick.attr("action") == "set") {
+				var switchname = $onclick.attr("switch");
+				console.log("adding " + $onclick.attr("value") + " to switch " + switchname);
+				$switches[switchname].value = parseInt($onclick.attr("value"));
+				console.log("value of switch " + switchname + " is now " + $switches[switchname].value);
 
 			} else {
-				// value is a static string
-				textvalue = $textsettings.text();
+				console.log("object " + $objid + " wants to perform an unknown action (" + $onclick.attr("action") + ")");
 			}
-
-			$($objselector).addClass("text-obj");
-			$($objselector).append(textvalue);
-
-		} else if ($(this).attr("type") != "clickbox"){
-			// this is not a text object or a clickbox, so treat it as an image.
-			$($objselector).css("background-image", "url(\"img/" + $currentroom.attr("ID") + "-" + $objid + ".png\")");
-		}
-
-
-		// position the object
-		$($objselector).css("width", $(this).attr("width") / 3); // these should all eventually scale dynamically with the canvas, right now i am using a canvas scaled to 1/3 the size of the background images (1920x1080)
-		$($objselector).css("height", $(this).attr("height") / 3);
-		$($objselector).css("top", $(this).attr("y") / 3);
-		$($objselector).css("left", $(this).attr("x") / 3);
-
-
-		// what happens when the object is clicked (if it has an onclick)
-		if (hasonclick) {
-			$($objselector).click(function(){
-				console.log("object " + $objid + " was clicked.");
-
-				var $onclick = $thisobj.find("onclick");
-
-				if ($onclick.attr("action") == "view") {
-					console.log("transitioning to object view " + $onclick.attr("id"));
-					navToObjView($onclick);
-				} else if ($onclick.attr("action") == "popup") {
-					console.log("popup with image: " + $onclick.attr("img"));
-					makePopUp($onclick);
-				} else if ($onclick.attr("action") == "add") {
-					var switchname = $onclick.attr("switch");
-					console.log("adding " + $onclick.attr("value") + " to switch " + switchname);
-					$switches[switchname].value = parseInt($switches[switchname].value) + parseInt($onclick.attr("value")); // just pray to god the user set everything up as integers or i don't even know what happens here but it probably fails
-					console.log("value of switch " + switchname + " is now " + $switches[switchname].value);
-
-				} else if ($onclick.attr("action") == "subtract") {
-					var switchname = $onclick.attr("switch");
-					console.log("subtracting " + $onclick.attr("value") + " from switch " + switchname);
-					$switches[switchname].value = parseInt($switches[switchname].value) - parseInt($onclick.attr("value"));
-					console.log("value of switch " + switchname + " is now " + $switches[switchname].value);
-
-				} else if ($onclick.attr("action") == "set") {
-					var switchname = $onclick.attr("switch");
-					console.log("adding " + $onclick.attr("value") + " to switch " + switchname);
-					$switches[switchname].value = parseInt($onclick.attr("value"));
-					console.log("value of switch " + switchname + " is now " + $switches[switchname].value);
-
-				} else {
-					console.log("object " + $objid + " wants to perform an unknown action (" + $onclick.attr("action") + ")");
-				}
-			});
-		}
-	});
+		});
+	}
 }
 
 
@@ -476,21 +485,21 @@ function onLeaveView() {
 // ---------------------------------------------------------------------------------------
 
 
-// switchToRoomWithDirection assigns $customroom to the room data matching the requested ID
+// switchToRoomWithDirection assigns $customroom to the room data matching the requested id
 // and navigates to the specified direction in the room.
-function switchToRoomWithDirection(roomID, viewdirection) {
+function switchToRoomWithDirection(roomid, viewdirection) {
 
-	console.log("attempting to switch to room " + roomID + " facing " + viewdirection);
+	console.log("attempting to switch to room " + roomid + " facing " + viewdirection);
 
 	var foundcurrentroom = false;
 
 	// pull out all of the room objects from the area file
 	$currentarea.find("room").each(function(){
-		if (!foundcurrentroom && $(this).attr("ID") == roomID) {
-			// if this is the right ID, then we're done here
+		if (!foundcurrentroom && $(this).attr("id") == roomid) {
+			// if this is the right id, then we're done here
 			$currentroom = $(this);
 			foundcurrentroom = true;
-			console.log("currently in room " + $currentroom.attr("ID"));
+			console.log("currently in room " + $currentroom.attr("id"));
 			return false;
 		}
 	});
@@ -507,9 +516,9 @@ function switchToRoomWithDirection(roomID, viewdirection) {
 
 // switchToRoom shortcut, so that we need not always specify a direction (usually, switching
 // rooms will take us to the same direction in a new room)
-function switchToRoom(roomID) {
-	switchToRoomWithDirection(roomID, $currentview.attr("id"));
-	console.log("switching to room " + roomID + " with view " + $currentview.attr("id"));
+function switchToRoom(roomid) {
+	switchToRoomWithDirection(roomid, $currentview.attr("id"));
+	console.log("switching to room " + roomid + " with view " + $currentview.attr("id"));
 }
 
 
@@ -527,7 +536,7 @@ function switchToRoom(roomID) {
 
 // makePopUp takes an onclick object (as defined in xml) and constructs a popup overlay from it
 function makePopUp(onclick) {
-	$("#popup-object").attr("src", "img/" + $currentroom.attr("ID") + "-" + onclick.attr("img") + ".png");
+	$("#popup-object").attr("src", "img/" + $currentroom.attr("id") + "-" + onclick.attr("img") + ".png");
 	$(".popup-contents").append("<p class=\"popup-caption\">" + onclick.attr("caption") + "</p>");
 	$(".popup").fadeIn(200);
 }
@@ -554,7 +563,7 @@ function hidePopUp() {
 
 	// print out all of the views associated with this room (and only this room)
 	$currentroom.find("view").each(function(){
-		console.log($(this).attr("ID"));
+		console.log($(this).attr("id"));
 	});
 
 */

@@ -16,9 +16,3 @@
 	</switches>
 
 </QuestCoreGame>
-
-<!-- I'll need either a separate structure to store switch attributes, or the switch structure
-	needs to become multi-dimensional (ids map to objects which map "value" and "attributes",
-	which is an object mapping ids to values)
-
-	only the switch values need to be stored when saving, though -->
