@@ -140,7 +140,8 @@ function populateSwitches() {
 }
 
 // loadArea loads a set of area data (various rooms within an area, their views, etc) from
-// an XML file named [areaName].xml. It then navigates to index 0 in that room (for now)
+// an XML file named [areaName].xml. It then navigates to the specified starting direction
+// in the specified starting room
 function loadArea(areaName) {
 	$.ajax({
 		type: "GET",
@@ -160,8 +161,11 @@ function loadArea(areaName) {
 	});
 }
 
-function setcurrentchainindex(direction) {
-	//need to set currentchainindex appropriately
+
+// setCurrentChainIndex takes a direction and uses it to find the appropriate view in the
+// "view chain" - the array holding the views for the current room, in order of direction
+// it returns a numerical index of the appropriate view
+function setCurrentChainIndex(direction) {
 	for (var i = 0; i < $currentroomchain.length; i++) {
 		if ($currentroomchain[i] == direction) {
 			currentchainindex = i;
@@ -302,7 +306,7 @@ function navToViewByDirection(direction) {
 		direction = $currentroomchain[0];
 	}
 
-	setcurrentchainindex(direction);
+	setCurrentChainIndex(direction);
 
 	console.log ("navigating to view by direction " + direction);
 
