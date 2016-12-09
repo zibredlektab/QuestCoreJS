@@ -415,7 +415,21 @@ function addObjectToView(objecttoadd) {
 
 	} else if ($objsettings.attr("type") == "image"){
 		// this is an image object
-		obj.css("background-image", "url(\"img/" + $currentroom.attr("id") + "-" + $objid + ".png\")");
+
+		var imagesuffix = "";
+
+		if ($objswitch) {
+			// should get image from a switch
+			imagesuffix = getImageSuffixFromSwitch($objswitch, $objsettings);
+
+			// register a listener function to update the image if the switch changes
+			$switches[$objswitch].registerListener(function(){
+				getImageSuffixFromSwitch($objswitch, $objsettings);
+			});
+		}
+
+		obj.css("background-image", "url(\"img/" + $currentroom.attr("id") + "-" + $objid + imagesuffix + ".png\")");
+
 	} else {
 		// this is a simple clickbox, for the time being no special processing is needed
 	}
@@ -475,12 +489,32 @@ function setTextObjectValueFromSwitch(textobj, switchname, objsettings) {
 
 	// check to see if the switch matches any specific state
 	objsettings.find("state").each(function(){
-		if ($(this).attr("value") == newtextvalue) {
+		if ($(this).attr("value") == $switches[switchname].value) {
 			newtextvalue = $(this).text();
 		}
 	});
 
 	textobj.append(newtextvalue);
+
+}
+
+// getImageSuffixFromSwitch provides a suffix for an image filename. it gets the value
+// of a switch and checks it against any specified states for the image object. if it matches
+// any, it uses the text to determine the new image name. otherwise, it simply uses the
+// current value of the specified switch.
+function getImageSuffixFromSwitch(switchname, objsettings) {
+
+	var newimagesuffix = $switches[switchname].value;
+
+	// check to see if the switch matches any specific state
+	objsettings.find("state").each(function(){
+		if ($(this).attr("value") == $switches[switchname].value) {
+			newimagesuffix = $(this).text();
+			return;
+		}
+	});
+
+	return newimagesuffix;
 
 }
 
