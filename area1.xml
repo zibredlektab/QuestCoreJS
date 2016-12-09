@@ -12,6 +12,7 @@
 		</view>
 		<view id="w">
 			<object type="image" id="ink" x="620" y="505" width="75" height="81" switch="digit0">
+				<state value="0"></state>
 				<onclick action="popup" img="ink" caption="it's an ink bottle"></onclick>
 			</object>
 		</view>
@@ -49,13 +50,15 @@
 
 if a "switch" is specified for an object, then the object's state is determined by that switch.
 	for a text object, this is simple - the state of the switch is the text content
-	for an image, the same idea works, [room id]-[object id]-[switch state].png
+	for an image, the same idea works, [room id]-[object id][switch state].png
 
 	but, it's also possible to use <state> children to specify different states for any object type:
 
 		<state value="[switch value]">new state</state>
 
-	which will use "new state" as the text value or "[room id]-[object id]-new state.png" as the image
+	which will use "new state" as the text value or "[room id]-[object id]new state.png" as the image.
+
+	be aware that as of right now, onclicks are not affected by states.
 
 
 valid onlcick actions are:
