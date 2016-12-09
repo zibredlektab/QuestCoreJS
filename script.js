@@ -406,7 +406,16 @@ function addObjectToView(objecttoadd) {
 			// register a listener function to re-draw the text if the switch changes
 			$switches[$objswitch].registerListener(function(){
 				obj.empty();
-				obj.append($switches[$objswitch].value);
+				var newtextvalue = $switches[$objswitch].value;
+
+				// check to see if the switch matches any specific state
+				$objsettings.find("state").each(function(){
+					if ($(this).attr("value") == newtextvalue) {
+						newtextvalue = $(this).text();
+					}
+				});
+
+				obj.append(newtextvalue);
 			});
 
 		} else {
