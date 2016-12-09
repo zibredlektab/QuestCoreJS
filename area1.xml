@@ -11,7 +11,7 @@
 			<fwd-room>foyer</fwd-room>
 		</view>
 		<view id="w">
-			<object type="image" id="ink" x="620" y="505" width="75" height="81">
+			<object type="image" id="ink" x="620" y="505" width="75" height="81" switch="digit0">
 				<onclick action="popup" img="ink" caption="it's an ink bottle"></onclick>
 			</object>
 		</view>

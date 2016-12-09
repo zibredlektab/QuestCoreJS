@@ -401,30 +401,17 @@ function addObjectToView(objecttoadd) {
 
 		if ($objswitch) {
 			// should get value from a switch
-			textvalue = $switches[$objswitch].value;
+			setTextObjectValueFromSwitch(obj, $objswitch, $objsettings);
 
-			// register a listener function to re-draw the text if the switch changes
+			// register a listener function to update the text if the switch changes
 			$switches[$objswitch].registerListener(function(){
-				obj.empty();
-				var newtextvalue = $switches[$objswitch].value;
-
-				// check to see if the switch matches any specific state
-				$objsettings.find("state").each(function(){
-					if ($(this).attr("value") == newtextvalue) {
-						newtextvalue = $(this).text();
-					}
-				});
-
-				obj.append(newtextvalue);
+				setTextObjectValueFromSwitch(obj, $objswitch, $objsettings);
 			});
 
 		} else {
 			// value is a static string
-			textvalue = $objsettings.text();
+			obj.append($objsettings.text());
 		}
-
-		obj.addClass("text-obj");
-		obj.append(textvalue);
 
 	} else if ($objsettings.attr("type") == "image"){
 		// this is an image object
@@ -479,6 +466,23 @@ function addObjectToView(objecttoadd) {
 	}
 }
 
+// setTextObjectValueFromSwitch gets the value of a switch and checks it against any
+// specified states for the text object. if it matches any, it uses the text for that state.
+// otherwise, it simply uses the current value of the specified switch.
+function setTextObjectValueFromSwitch(textobj, switchname, objsettings) {
+	textobj.empty();
+	var newtextvalue = $switches[switchname].value;
+
+	// check to see if the switch matches any specific state
+	objsettings.find("state").each(function(){
+		if ($(this).attr("value") == newtextvalue) {
+			newtextvalue = $(this).text();
+		}
+	});
+
+	textobj.append(newtextvalue);
+
+}
 
 // onLeaveView is called just before a new view is loaded, it is used to unload objects
 function onLeaveView() {
