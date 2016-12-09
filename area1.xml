@@ -3,7 +3,7 @@
 	<room id="kitchen">
 		<view id="n"></view>
 		<view id="e">
-			<object type="clickbox" id="safe" x="720" y="460" width="575" height="575">
+			<object id="safe" x="720" y="460" width="575" height="575">
 				<onclick action="view" id="safe"></onclick>
 			</object>
 		</view>
@@ -11,17 +11,15 @@
 			<fwd-room>foyer</fwd-room>
 		</view>
 		<view id="w">
-			<object id="ink" x="620" y="505" width="75" height="81">
+			<object type="image" id="ink" x="620" y="505" width="75" height="81">
 				<onclick action="popup" img="ink" caption="it's an ink bottle"></onclick>
 			</object>
 		</view>
 		<view type="object" id="safe">
-			<object type="clickbox" id="digit0-up" x="720" y="460" width="575" height="575">
+			<object id="digit0-up" x="720" y="460" width="575" height="575">
 				<onclick action="add" switch="digit0" value="1"></onclick>
 			</object>
-			<object type="text" id="digit0-text" x="720" y="460">
-				<text switch="digit0"></text>
-			</object>
+			<object type="text" id="digit0-text" x="720" y="460" switch="digit0">foo</object>
 		</view>
 	</room>
 	<room id="foyer">
@@ -38,15 +36,21 @@
 <!-- valid object types are:
 
 * (default) *
-	if no type is specified, objects are an image (the source image is named "[room id]-[object id].png" for the time being)
+	if no type is specified, object is an invisible square, providing an onclick action (useful when objects are actually drawn into the background image)
 
-* clickbox *
-	an invisible square, providing an onclick action (useful when objects are actually drawn into the background image)
+* image *
+	an image (the source image is named "[room id]-[object id].png" for the time being)
 
 * text *
 	draws dynamic text on screen, does not provide an onclick (at the moment. this is stupid though, all objects should have the option to have an onclick, and if one isn't specified than it should not be clickable...)
 	a <text> object should be included, with either a static string or a "switch" attribute, in which case the value of the specified switch will be used. Eventually I want to be able to specify basic styling from here.
 
+if a "switch" is specified for an object, then the object's state is determined by that switch.
+for a text object, this is simple - the state of the switch is the text content
+for an image, the same idea works, [room id]-[object id]-[switch state].png
+but, it's also possible to use <state> children to specify different states for any object type:
+<state value="[switch value]">new state</state>
+which will use "new state" as the text value or "[room id]-[object id]-new state.png" as the image
 
 
 valid onlcick actions are:

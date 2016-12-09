@@ -368,6 +368,7 @@ function onLoadView() {
 function addObjectToView(objecttoadd) {
 	var $objsettings = objecttoadd;
 	var $objid = $objsettings.attr("id");
+	var $objswitch = $objsettings.attr("switch");
 	var hasonclick;
 
 	console.log("adding object " + $objid + " at " + $objsettings.attr("x") + ", " + $objsettings.attr("y"));
@@ -396,30 +397,31 @@ function addObjectToView(objecttoadd) {
 	// what kind of object are we dealing with here?
 	if ($objsettings.attr("type") == "text") {
 		// this is a text object
-		var $textsettings = $objsettings.find("text");
 		var textvalue = "";
 
-		if ($textsettings.attr("switch")) {
+		if ($objswitch) {
 			// should get value from a switch
-			textvalue = $switches[$textsettings.attr("switch")].value;
+			textvalue = $switches[$objswitch].value;
 
 			// register a listener function to re-draw the text if the switch changes
-			$switches[$textsettings.attr("switch")].registerListener(function(){
+			$switches[$objswitch].registerListener(function(){
 				obj.empty();
-				obj.append($switches[$textsettings.attr("switch")].value);
+				obj.append($switches[$objswitch].value);
 			});
 
 		} else {
 			// value is a static string
-			textvalue = $textsettings.text();
+			textvalue = $objsettings.text();
 		}
 
 		obj.addClass("text-obj");
 		obj.append(textvalue);
 
-	} else if ($objsettings.attr("type") != "clickbox"){
-		// this is not a text object or a clickbox, so treat it as an image.
+	} else if ($objsettings.attr("type") == "image"){
+		// this is an image object
 		obj.css("background-image", "url(\"img/" + $currentroom.attr("id") + "-" + $objid + ".png\")");
+	} else {
+		// this is a simple clickbox, for the time being no special processing is needed
 	}
 
 
