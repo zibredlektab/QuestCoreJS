@@ -366,12 +366,49 @@ function onLoadView() {
 // or dynamic text) with settings defining the object as it is seen by default, and what
 // happens when the object is clicked.
 function addObjectToView(objecttoadd) {
-	var $objsettings = objecttoadd;
-	var $objid = $objsettings.attr("id");
-	var $objswitch = $objsettings.attr("switch");
-	var hasonclick;
+	var $objsettings = objecttoadd; // the js object defining this object
+	var $objid = $objsettings.attr("id"); // the root name of this object
+	var $objswitch = $objsettings.attr("switch"); // the switch tied to this objects display (if one exists)
+	var $objstate = $objsettings; // the js object defining the object's current state (as determined by the switch). by default this is the same as the root js object for this object
+	var conditionalvalue = ""; // the string that is modified in different states. for images, it is used as a filename suffix, for text it replaces the whole text
+	var hasonclick; // should this object be clickable
+	var $onclick;
 
 	console.log("adding object " + $objid + " at " + $objsettings.attr("x") + ", " + $objsettings.attr("y"));
+
+
+	// need to determine object state here
+	// very first thing we do is check for a switch, and get the value of that switch
+	// then use the switch to set $objstate and conditionalvalue
+
+	if ($objswitch) {
+		var switchvalue = $switches[$objswitch].value;
+		conditionalvalue = switchvalue;
+
+		$objstate = getStateFromSwitch($objsettings, switchvalue);
+		if ($objstate != $objsettings) {
+			conditionalvalue = $objstate.text().replace(/(\r\n|\n|\r)/gm,"");
+		}
+	}
+
+
+	// determine if there is an onclick on the state, or on the object itself
+	hasonclick = true;
+	$onclick = $objstate.find("state > onclick");
+
+	if (!$onclick.length) { // failed to find an onclick for the state, should check the root object
+		console.log("this state does not have an onclick");
+		$onclick = $objsettings.find("object > onclick");
+		if (!$onclick.length) { // failed to find an onclick on the object
+			console.log("this object doesn't have an onclick either");
+			hasonclick = false;
+		} else {
+			console.log("but there is an onclick on the object");
+		}
+	} else {
+		console.log("this state has an onclick");
+	}
+
 
 	// use <a> if it is clickable (has an onclick child object)
 	// otherwise, make it a <div>
@@ -379,19 +416,29 @@ function addObjectToView(objecttoadd) {
 	var tag = "";
 	var attr = "";
 
-	if ($objsettings.find("onclick").length) {
-		hasonclick = true;
+	if (hasonclick) {
+		console.log("this object should have an <a> tag.");
 		tag = "a";
 		attr = "href=\"#obj\"";
 	} else {
-		hasonclick = false;
+		console.log("this object should have an <div> tag.");
 		tag = "div";
 	}
 
 	// put the object in the scene
 	$(".object-container").append("<" + tag + " " + attr + " class=\"obj\" id=\"" + $objid + "\"></" + tag + ">");
 
-	var obj = $("#" + $objid);
+
+	var obj = $("#" + $objid); // then find the object in the DOM so we can reference it later
+
+
+	// if this object is dependent on a switch, then we should remove & re-add it if that switch changes
+	if ($objswitch) {
+		$switches[$objswitch].registerListener(function(){
+			obj.remove();
+			addObjectToView($objsettings);
+		});
+	}
 
 
 	// what kind of object are we dealing with here?
@@ -401,17 +448,14 @@ function addObjectToView(objecttoadd) {
 
 		if ($objswitch) {
 			// should get value from a switch
-			setTextObjectValueFromSwitch(obj, $objswitch, $objsettings);
-
-			// register a listener function to update the text if the switch changes
-			$switches[$objswitch].registerListener(function(){
-				setTextObjectValueFromSwitch(obj, $objswitch, $objsettings);
-			});
+			textvalue = conditionalvalue;
 
 		} else {
 			// value is a static string
-			obj.append($objsettings.text());
+			textvalue = $objsettings.text();
 		}
+
+		obj.append(textvalue);
 
 	} else if ($objsettings.attr("type") == "image"){
 		// this is an image object
@@ -420,12 +464,8 @@ function addObjectToView(objecttoadd) {
 
 		if ($objswitch) {
 			// should get image from a switch
-			imagesuffix = getImageSuffixFromSwitch($objswitch, $objsettings);
-
-			// register a listener function to update the image if the switch changes
-			$switches[$objswitch].registerListener(function(){
-				getImageSuffixFromSwitch($objswitch, $objsettings);
-			});
+			imagesuffix = conditionalvalue;
+			// i would definitely like to have a fallback in here, if it can't find an image matching the suffix...
 		}
 
 		obj.css("background-image", "url(\"img/" + $currentroom.attr("id") + "-" + $objid + imagesuffix + ".png\")");
@@ -447,7 +487,7 @@ function addObjectToView(objecttoadd) {
 		obj.click(function(){
 			console.log("object " + $objid + " was clicked.");
 
-			var $onclick = $objsettings.find("onclick");
+			var $onclick = $objstate.find("onclick");
 
 			if ($onclick.attr("action") == "view") {
 				console.log("transitioning to object view " + $onclick.attr("id"));
@@ -480,6 +520,25 @@ function addObjectToView(objecttoadd) {
 	}
 }
 
+
+
+// getStateFromSwitch takes a js object defining an object and the value of a switch, and
+// returns a state object if it finds one matching the current value of the switch. if it
+// doesn't find a matching state it returns the root js object.
+function getStateFromSwitch(objsettings, switchvalue) {
+	var newstate = objsettings;
+	objsettings.find("state").each(function() {
+
+		if ($(this).attr("value") == switchvalue) {
+			newstate = $(this);
+			return;
+		}
+	});
+
+	return newstate;
+}
+
+/*
 // setTextObjectValueFromSwitch gets the value of a switch and checks it against any
 // specified states for the text object. if it matches any, it uses the text for that state.
 // otherwise, it simply uses the current value of the specified switch.
@@ -496,7 +555,7 @@ function setTextObjectValueFromSwitch(textobj, switchname, objsettings) {
 
 	textobj.append(newtextvalue);
 
-}
+}*/
 
 // getImageSuffixFromSwitch provides a suffix for an image filename. it gets the value
 // of a switch and checks it against any specified states for the image object. if it matches
