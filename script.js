@@ -374,7 +374,7 @@ function addObjectToView(objecttoadd) {
 	var clickable; // should this object be clickable?
 	var $onclick; // the settings for what should happen when the object is clicked (if it's clickable)
 
-	console.log("adding object " + $objid + " at " + $objsettings.attr("x") + ", " + $objsettings.attr("y"));
+	//console.log("adding object " + $objid + " at " + $objsettings.attr("x") + ", " + $objsettings.attr("y"));
 
 
 	// need to determine object state here
@@ -416,44 +416,23 @@ function addObjectToView(objecttoadd) {
 		}
 	}
 
-
-/*	clickable = true;
-	$onclick = $objstate.find("state > onclick");
-
-	if (!$onclick.length) { // failed to find an onclick for the state, should check the root object
-		console.log("this state does not have an onclick");
-		$onclick = $objsettings.find("object > onclick");
-		if (!$onclick.length) { // failed to find an onclick on the object
-			console.log("this object doesn't have an onclick either");
-			clickable = false;
-		} else {
-			console.log("but there is an onclick on the object");
-		}
-	} else {
-		console.log("this state has an onclick");
-	}*/
-
-
-	// use <a> if it is clickable (has an onclick child object)
-	// otherwise, make it a <div>
+	// use <a> if it is clickable, otherwise make it a <div>
 	// (the attr variable is for the href= value if it is clickable)
 	var tag = "";
 	var attr = "";
 
 	if (clickable) {
-		console.log("this object should have an <a> tag.");
 		tag = "a";
 		attr = "href=\"#obj\"";
 	} else {
-		console.log("this object should have an <div> tag.");
 		tag = "div";
 	}
 
 	// put the object in the scene
 	$(".object-container").append("<" + tag + " " + attr + " class=\"obj\" id=\"" + $objid + "\"></" + tag + ">");
 
-
-	var obj = $("#" + $objid); // then find the object in the DOM so we can reference it later
+	// then find the object in the DOM so we can reference it later
+	var obj = $("#" + $objid);
 
 
 	// if this object is dependent on a switch, then we should remove & re-add it if that switch changes
@@ -562,44 +541,6 @@ function getStateFromSwitch(objsettings, switchvalue) {
 	return newstate;
 }
 
-/*
-// setTextObjectValueFromSwitch gets the value of a switch and checks it against any
-// specified states for the text object. if it matches any, it uses the text for that state.
-// otherwise, it simply uses the current value of the specified switch.
-function setTextObjectValueFromSwitch(textobj, switchname, objsettings) {
-	textobj.empty();
-	var newtextvalue = $switches[switchname].value;
-
-	// check to see if the switch matches any specific state
-	objsettings.find("state").each(function(){
-		if ($(this).attr("value") == $switches[switchname].value) {
-			newtextvalue = $(this).text();
-		}
-	});
-
-	textobj.append(newtextvalue);
-
-}*/
-
-// getImageSuffixFromSwitch provides a suffix for an image filename. it gets the value
-// of a switch and checks it against any specified states for the image object. if it matches
-// any, it uses the text to determine the new image name. otherwise, it simply uses the
-// current value of the specified switch.
-function getImageSuffixFromSwitch(switchname, objsettings) {
-
-	var newimagesuffix = $switches[switchname].value;
-
-	// check to see if the switch matches any specific state
-	objsettings.find("state").each(function(){
-		if ($(this).attr("value") == $switches[switchname].value) {
-			newimagesuffix = $(this).text();
-			return;
-		}
-	});
-
-	return newimagesuffix;
-
-}
 
 // onLeaveView is called just before a new view is loaded, it is used to unload objects
 function onLeaveView() {
@@ -615,7 +556,6 @@ function onLeaveView() {
 
 
 
-
 // ---------------------------------------------------------------------------------------
 // ROOM SWITCHING FUNCTIONS
 // ---------------------------------------------------------------------------------------
@@ -625,7 +565,7 @@ function onLeaveView() {
 // and navigates to the specified direction in the room.
 function switchToRoomWithDirection(roomid, viewdirection) {
 
-	console.log("attempting to switch to room " + roomid + " facing " + viewdirection);
+	//console.log("attempting to switch to room " + roomid + " facing " + viewdirection);
 
 	var foundcurrentroom = false;
 
@@ -635,7 +575,7 @@ function switchToRoomWithDirection(roomid, viewdirection) {
 			// if this is the right id, then we're done here
 			$currentroom = $(this);
 			foundcurrentroom = true;
-			console.log("currently in room " + $currentroom.attr("id"));
+			//console.log("currently in room " + $currentroom.attr("id"));
 			return false;
 		}
 	});
@@ -654,7 +594,7 @@ function switchToRoomWithDirection(roomid, viewdirection) {
 // rooms will take us to the same direction in a new room)
 function switchToRoom(roomid) {
 	switchToRoomWithDirection(roomid, $currentview.attr("id"));
-	console.log("switching to room " + roomid + " with view " + $currentview.attr("id"));
+	//console.log("switching to room " + roomid + " with view " + $currentview.attr("id"));
 }
 
 
