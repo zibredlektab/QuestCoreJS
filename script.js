@@ -114,6 +114,7 @@ function loadConfig(gamename) {
 	});
 }
 
+
 // populateSwitches reads the default state of all game switches and stores them in an object
 function populateSwitches() {
 	$gameconfig.find("switch").each(function(){
@@ -134,7 +135,7 @@ function populateSwitches() {
 				this.listener = newlistener;
 			}
 		};
-		console.log("adding switch " + switchid + " with value of " + $switches[switchid].value + " to the switch list");
+		//console.log("adding switch " + switchid + " with value of " + $switches[switchid].value + " to the switch list");
 	});
 
 }
@@ -291,7 +292,7 @@ function navToViewByIndex(index) {
 
 	currentchainindex = index;
 
-	console.log ("navigating to view by index " + index);
+	//console.log ("navigating to view by index " + index);
 
 	navToView($currentroomviews[$currentroomchain[index]]);
 
@@ -308,7 +309,7 @@ function navToViewByDirection(direction) {
 
 	setCurrentChainIndex(direction);
 
-	console.log ("navigating to view by direction " + direction);
+	//console.log ("navigating to view by direction " + direction);
 
 	navToView($currentroomviews[direction]);
 
@@ -362,6 +363,7 @@ function onLoadView() {
 	});
 }
 
+
 // addObjectToView takes a js object with settings for an object (clickable image, clickbox,
 // or dynamic text) with settings defining the object as it is seen by default, and what
 // happens when the object is clicked.
@@ -375,7 +377,6 @@ function addObjectToView(objecttoadd) {
 	var $onclick; // the settings for what should happen when the object is clicked (if it's clickable)
 
 	//console.log("adding object " + $objid + " at " + $objsettings.attr("x") + ", " + $objsettings.attr("y"));
-
 
 	// need to determine object state here
 	// very first thing we do is check for a switch, and get the value of that switch
@@ -530,12 +531,38 @@ function addObjectToView(objecttoadd) {
 // doesn't find a matching state it returns the root js object.
 function getStateFromSwitch(objsettings, switchvalue) {
 	var newstate = objsettings;
+	var condition;
+
 	objsettings.find("state").each(function() {
 
-		if ($(this).attr("value") == switchvalue) {
+		condition = $(this).attr("value");
+
+		if (condition.includes("+")) {
+			// this state applies to a range from x to infinity
+			if (switchvalue >= condition.replace("+","")) {
+				newstate = $(this);
+				return;
+			}
+		} else if (condition.includes("-")) {
+			if (condition.match("\\d+-\\d+")) {
+				// this state applies to a range of two numbers
+				// gonna deal with this one later, yeesh
+			} else if (condition.match("\\d+-$")) {
+				// this state applies to a range from -infinity to x
+				if (condition.replace("-","") >= switchvalue) {
+					newstate = $(this);
+					return;
+				}
+			} else {
+				// this is just a negative number
+			}
+		}
+
+		if (condition == switchvalue) {
 			newstate = $(this);
 			return;
 		}
+
 	});
 
 	return newstate;

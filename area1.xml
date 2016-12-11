@@ -16,6 +16,7 @@
 				<state value="1">1
 					<onclick action="popup" img="ink" caption="it's an ink bottle"></onclick>
 				</state>
+				<state value="3+"></state> <!-- switch values of 4 or higher get no suffix -->
 			</object>
 		</view>
 		<view type="object" id="safe">
