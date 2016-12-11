@@ -1,0 +1,58 @@
+Object add flow:
+- check if should be switch-driven
+- determine state & set conditional value from state
+- check for onclick (in state or in root)
+- empty & add object
+- register listener to re-execute all of above
+
+- set up onclick
+
+
+
+if we're in a state, and the state has an onclick, the state onclick takes precedence
+if we're in a state, but the state does not have an onclick, but the object does have one,
+	the object onclick takes precedence (need to add something to block this behavior if a
+	state should not be clickable when the default object is - perhaps enable/disable tags?)
+if we are not in a state, and the object has an onclick, then the object onclick takes precedence
+if there are no onclicks anywhere, then obviously it should not be clickable ever
+
+- if we are in a state
+	- if the state has an onclick
+		- onclick = state onclick
+	- else if the state does not have an onclick
+		- if the root object has an onclick
+			- onclick = object onclick
+		- else
+			- no onclick
+- else if we are not in a state
+	- if the root object has an onclick
+		- onclick = object onclick
+	- else
+		- no onclick
+
+var rootonclick, stateonclick
+- set rootonclick
+
+
+- if the current state has an onclick
+	- onclick = this state's onclick
+- else (current state does not have an onclick)
+	- if this is the root object
+		- no onclick
+	- else (this is not the root object)
+		- if the root object has an onclick
+			- onclick = root onclick
+		- else (root object has no onlick)
+			- no onclick
+
+- if state does not have an onclick
+	- if state is not root
+		- if root does not have an onclick
+
+
+
+if an object should be switch-based, it should have a conditional value of the value of
+	that switch
+if the object then defines states, the conditional value is the contents of the state object,
+	as selected by the value of the switch
+states should also be able to specify *ranges* of switch values, perhaps?
