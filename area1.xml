@@ -12,11 +12,11 @@
 		</view>
 		<view id="w">
 			<object type="image" id="ink" x="620" y="505" width="75" height="81" switch="digit0">
-				<state value="0"></state> <!-- no suffix for the filename if the switch is 0 -->
-				<state value="1">1
+				<state value="1-"></state> <!-- no suffix for the filename if the switch is 0 -->
+				<state value="2-4">1
 					<onclick action="popup" img="ink" caption="it's an ink bottle"></onclick>
 				</state>
-				<state value="3+"></state> <!-- switch values of 4 or higher get no suffix -->
+				<state value="5+"></state> <!-- switch values of 4 or higher get no suffix -->
 			</object>
 		</view>
 		<view type="object" id="safe">

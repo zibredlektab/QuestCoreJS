@@ -546,7 +546,14 @@ function getStateFromSwitch(objsettings, switchvalue) {
 		} else if (condition.includes("-")) {
 			if (condition.match("\\d+-\\d+")) {
 				// this state applies to a range of two numbers
-				// gonna deal with this one later, yeesh
+
+				var range = condition.split("-");
+				if (switchvalue >= range[0] && switchvalue <= range[1]) {
+					// switch is within this range
+					newstate = $(this);
+					return;
+				}
+
 			} else if (condition.match("\\d+-$")) {
 				// this state applies to a range from -infinity to x
 				if (condition.replace("-","") >= switchvalue) {
