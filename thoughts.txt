@@ -56,3 +56,5 @@ if an object should be switch-based, it should have a conditional value of the v
 if the object then defines states, the conditional value is the contents of the state object,
 	as selected by the value of the switch
 states should also be able to specify *ranges* of switch values, perhaps?
+of course now it also occurs to me that i'd maybe like to be able to specify formulas for values
+-> but actually this is where i should start hooking in actual functions to objects i think

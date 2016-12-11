@@ -12,16 +12,17 @@
 		</view>
 		<view id="w">
 			<object type="image" id="ink" x="620" y="505" width="75" height="81" switch="digit0">
-				<state value="1-"></state> <!-- no suffix for the filename if the switch is 0 -->
-				<state value="2-4">1
+				<state value="-1"></state> <!-- no suffix for the filename if the switch is 1 or less -->
+				<state value="2-4">1<!-- from 2-4, the object will be clickable -->
 					<onclick action="popup" img="ink" caption="it's an ink bottle"></onclick>
 				</state>
-				<state value="5+"></state> <!-- switch values of 4 or higher get no suffix -->
+				<state value="5+"></state> <!-- no suffix at 5 or above -->
+				<state value="-10">2</state> <!-- this should never happen, because right now there's no reason switch to be negative -->
 			</object>
 		</view>
 		<view type="object" id="safe">
 			<object id="digit0-up" x="720" y="460" width="575" height="575">
-				<onclick action="add" switch="digit0" value="1"></onclick>
+				<onclick action="add" switch="digit0" value="-10"></onclick>
 			</object>
 			<object type="text" id="digit0-text" x="720" y="460" switch="digit0">
 				<state value="5">FIVE</state>
