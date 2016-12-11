@@ -371,8 +371,8 @@ function addObjectToView(objecttoadd) {
 	var $objswitch = $objsettings.attr("switch"); // the switch tied to this objects display (if one exists)
 	var $objstate = $objsettings; // the js object defining the object's current state (as determined by the switch). by default this is the same as the root js object for this object
 	var conditionalvalue = ""; // the string that is modified in different states. for images, it is used as a filename suffix, for text it replaces the whole text
-	var hasonclick; // should this object be clickable
-	var $onclick;
+	var clickable; // should this object be clickable?
+	var $onclick; // the settings for what should happen when the object is clicked (if it's clickable)
 
 	console.log("adding object " + $objid + " at " + $objsettings.attr("x") + ", " + $objsettings.attr("y"));
 
@@ -393,7 +393,31 @@ function addObjectToView(objecttoadd) {
 
 
 	// determine if there is an onclick on the state, or on the object itself
-	hasonclick = true;
+
+	if ($objstate.children("onclick").length) {
+		// current state has onclick
+		clickable = true;
+		$onclick = $objstate.children("onclick");
+	} else {
+		// current state does not have onclick
+		if ($objstate = $objsettings) {
+			// this state is the default one
+			clickable = false;
+		} else {
+			// this state is not the default one
+			if ($objsettings.children("onclick").length) {
+				// root object has an onclick
+				clickable = true;
+				$onclick = $objsettings.children("onclick");
+			} else {
+				// root object does not have an onclick
+				clickable = false;
+			}
+		}
+	}
+
+
+/*	clickable = true;
 	$onclick = $objstate.find("state > onclick");
 
 	if (!$onclick.length) { // failed to find an onclick for the state, should check the root object
@@ -401,13 +425,13 @@ function addObjectToView(objecttoadd) {
 		$onclick = $objsettings.find("object > onclick");
 		if (!$onclick.length) { // failed to find an onclick on the object
 			console.log("this object doesn't have an onclick either");
-			hasonclick = false;
+			clickable = false;
 		} else {
 			console.log("but there is an onclick on the object");
 		}
 	} else {
 		console.log("this state has an onclick");
-	}
+	}*/
 
 
 	// use <a> if it is clickable (has an onclick child object)
@@ -416,7 +440,7 @@ function addObjectToView(objecttoadd) {
 	var tag = "";
 	var attr = "";
 
-	if (hasonclick) {
+	if (clickable) {
 		console.log("this object should have an <a> tag.");
 		tag = "a";
 		attr = "href=\"#obj\"";
@@ -483,7 +507,7 @@ function addObjectToView(objecttoadd) {
 
 
 	// what happens when the object is clicked (if it has an onclick)
-	if (hasonclick) {
+	if (clickable) {
 		obj.click(function(){
 			console.log("object " + $objid + " was clicked.");
 
