@@ -45,20 +45,6 @@ $(document).ready(function(){
 		hidePopUp();
 	});
 
-	// forward nav button logic
-	$("#forward").click(function(){
-		if ($currentview.has("fwd-room").length > 0) {
-			if ($currentview.has("fwd-dir").length > 0) {
-				switchToRoomWithDirection($currentview.find("fwd-room").text(), $currentview.find("fwd-dir").text());
-			} else {
-				console.log("no fwd dir");
-				switchToRoom($currentview.find("fwd-room").text());
-			}
-		} else {
-			console.log ("trying to move forward in a room that should not have a forward link...");
-		}
-	});
-
 
 	// debug outline checkbox
 	$("#debug").click(function() {
@@ -135,7 +121,6 @@ function populateSwitches() {
 				this.listener = newlistener;
 			}
 		};
-		//console.log("adding switch " + switchid + " with value of " + $switches[switchid].value + " to the switch list");
 	});
 
 }
@@ -183,10 +168,8 @@ function populateRoomViewChain() {
 
 	$currentroom.find("view").each(function(){
 		if ($(this).attr("type") != "object") {
-			//console.log("adding " + $(this).attr("id") + " to the room chain");
 			$currentroomchain.push($(this).attr("id")); // add any navigable views to the room chain
 		}
-		//console.log ("adding " + $(this).attr("id") + " to the room views object");
 		var viewid = $(this).attr("id");
 		$currentroomviews[viewid] = $(this); // add all views to the roomviews object
 	});
@@ -208,7 +191,8 @@ function navClick(navbutton) {
 		navToViewByIndex(currentchainindex);
 	} else {
 		// we are in a normal view, nav buttons behave according to their id
-		if (navbutton.id == "forward") {
+		if (navbutton.attr("id") == "forward") {
+			// forward
 			goForward();
 		} else {
 			// left or right
@@ -222,13 +206,14 @@ function navClick(navbutton) {
 function goForward() {
 	if ($currentview.has("fwd-room").length > 0) {
 		if ($currentview.has("fwd-dir").length > 0) {
+			// navigate using the specified direction
 			switchToRoomWithDirection($currentview.find("fwd-room").text(), $currentview.find("fwd-dir").text());
 		} else {
-			console.log("no fwd dir");
+			// no forward direction has been specified, try to just move along the current direction
 			switchToRoom($currentview.find("fwd-room").text());
 		}
 	} else {
-		console.log ("trying to move forward in a room that should not have a forward link...");
+		console.log ("trying to move forward in a room that does not have a forward link!");
 	}
 }
 
@@ -237,19 +222,17 @@ function goForward() {
 // the bounds of the room, and then navigating to the appropriate view.
 function turnTo(direction) {
 	if (direction == undefined) {
-		console.log("direction is undefined, doing nothing");
+		console.log("turn direction is undefined, doing nothing");
 		return;
 	}
 
 	if (direction == "left") {
 		currentchainindex--;
-		//console.log("turning left, currentchainindex is now " + currentchainindex);
 		if (currentchainindex < 0) {
 			currentchainindex = $currentroomchain.length-1;
 		}
 	} else if (direction == "right") {
 		currentchainindex++;
-		//console.log("turning right, currentchainindex is now " + currentchainindex);
 		if (currentchainindex >= $currentroomchain.length) {
 			currentchainindex = 0;
 		}
@@ -292,7 +275,6 @@ function navToViewByIndex(index) {
 
 	currentchainindex = index;
 
-	//console.log ("navigating to view by index " + index);
 
 	navToView($currentroomviews[$currentroomchain[index]]);
 
@@ -309,7 +291,6 @@ function navToViewByDirection(direction) {
 
 	setCurrentChainIndex(direction);
 
-	//console.log ("navigating to view by direction " + direction);
 
 	navToView($currentroomviews[direction]);
 
@@ -324,7 +305,6 @@ function navToViewByid(viewid) {
 		viewid = $currentroomchain[0];
 	}
 
-	console.log ("navigating to view by id " + viewid);
 
 	navToView($currentroomviews[viewid]);
 }
@@ -340,10 +320,8 @@ function navToObjView(onclick) {
 function onLoadView() {
 	// determine whether the "forward" clickbox should be active & make it so
 	if ($currentview.has("fwd-room").length > 0) {
-		//console.log("forward exists here");
 		$("#forward").css("display", "block");
 	} else {
-		//console.log("forward does not exist here");
 		$("#forward").css("display", "none");
 	}
 
@@ -376,7 +354,6 @@ function addObjectToView(objecttoadd) {
 	var clickable; // should this object be clickable?
 	var $onclick; // the settings for what should happen when the object is clicked (if it's clickable)
 
-	//console.log("adding object " + $objid + " at " + $objsettings.attr("x") + ", " + $objsettings.attr("y"));
 
 	// need to determine object state here
 	// very first thing we do is check for a switch, and get the value of that switch
@@ -489,33 +466,28 @@ function addObjectToView(objecttoadd) {
 	// what happens when the object is clicked (if it has an onclick)
 	if (clickable) {
 		obj.click(function(){
-			console.log("object " + $objid + " was clicked.");
+			//console.log("object " + $objid + " was clicked.");
 
 			var $onclick = $objstate.find("onclick");
 
 			if ($onclick.attr("action") == "view") {
-				console.log("transitioning to object view " + $onclick.attr("id"));
 				navToObjView($onclick);
+
 			} else if ($onclick.attr("action") == "popup") {
-				console.log("popup with image: " + $onclick.attr("img"));
 				makePopUp($onclick);
+
 			} else if ($onclick.attr("action") == "add") {
 				var switchname = $onclick.attr("switch");
-				console.log("adding " + $onclick.attr("value") + " to switch " + switchname);
+
 				$switches[switchname].value = parseInt($switches[switchname].value) + parseInt($onclick.attr("value")); // just pray to god the user set everything up as integers or i don't even know what happens here but it probably fails
-				console.log("value of switch " + switchname + " is now " + $switches[switchname].value);
 
 			} else if ($onclick.attr("action") == "subtract") {
 				var switchname = $onclick.attr("switch");
-				console.log("subtracting " + $onclick.attr("value") + " from switch " + switchname);
 				$switches[switchname].value = parseInt($switches[switchname].value) - parseInt($onclick.attr("value"));
-				console.log("value of switch " + switchname + " is now " + $switches[switchname].value);
 
 			} else if ($onclick.attr("action") == "set") {
 				var switchname = $onclick.attr("switch");
-				console.log("adding " + $onclick.attr("value") + " to switch " + switchname);
-				$switches[switchname].value = parseInt($onclick.attr("value"));
-				console.log("value of switch " + switchname + " is now " + $switches[switchname].value);
+				$switches[switchname].value = $onclick.attr("value");
 
 			} else {
 				console.log("object " + $objid + " wants to perform an unknown action (" + $onclick.attr("action") + ")");
@@ -580,7 +552,6 @@ function getStateFromSwitch(objsettings, switchvalue) {
 function onLeaveView() {
 	if ($currentview != undefined) {
 		$(".obj").each(function(){
-			console.log("removing object " + $(this).attr("id"));
 			$(this).remove();
 		});
 	}
@@ -599,8 +570,6 @@ function onLeaveView() {
 // and navigates to the specified direction in the room.
 function switchToRoomWithDirection(roomid, viewdirection) {
 
-	//console.log("attempting to switch to room " + roomid + " facing " + viewdirection);
-
 	var foundcurrentroom = false;
 
 	// pull out all of the room objects from the area file
@@ -609,7 +578,6 @@ function switchToRoomWithDirection(roomid, viewdirection) {
 			// if this is the right id, then we're done here
 			$currentroom = $(this);
 			foundcurrentroom = true;
-			//console.log("currently in room " + $currentroom.attr("id"));
 			return false;
 		}
 	});
@@ -618,6 +586,7 @@ function switchToRoomWithDirection(roomid, viewdirection) {
 	if (!foundcurrentroom) {
 		alert("requested room doesn't exist in this area");
 	} else {
+		console.log("entered room " + roomid);
 		populateRoomViewChain();
 
 		navToViewByDirection(viewdirection);
@@ -628,7 +597,6 @@ function switchToRoomWithDirection(roomid, viewdirection) {
 // rooms will take us to the same direction in a new room)
 function switchToRoom(roomid) {
 	switchToRoomWithDirection(roomid, $currentview.attr("id"));
-	//console.log("switching to room " + roomid + " with view " + $currentview.attr("id"));
 }
 
 
@@ -668,7 +636,6 @@ function hidePopUp() {
 // ---------------------------------------------------------------------------------------
 
 /*
-
 
 
 	// print out all of the views associated with this room (and only this room)
