@@ -107,16 +107,48 @@ function populateSwitches() {
 		var switchid = $(this).attr("id");
 		$switches[switchid] = {
 			internalvalue: $(this).text(),
-			min: $(this).attr("min"),
-			max: $(this).attr("max"),
+			min: parseInt($(this).attr("min")),
+			max: parseInt($(this).attr("max")),
+			rollover: $(this).attr("rollover"),
 			listener: function(val) {},
+
 			set value(val) {
-				this.internalvalue = val;
+
+				var newvalue = this.internalvalue;
+
+				if (val > this.max) {
+					if (this.rollover) {
+						newvalue = this.min;
+					} else {
+						newvalue = this.max;
+					}
+				} else if (val < this.min) {
+					if (this.rollover) {
+						newvalue = this.max;
+					} else {
+						newvalue = this.min;
+					}
+				} else {
+					newvalue = val;
+				}
+
+				this.internalvalue = newvalue;
+
 				this.listener(val);
 			},
+
+			add: function(val) {
+				this.value = parseInt(val) + parseInt(this.internalvalue);
+			},
+
+			subtract: function(val) {
+				this.value = parseInt(this.internalvalue) - parseInt(val);
+			},
+
 			get value() {
 				return this.internalvalue;
 			},
+
 			registerListener: function(newlistener) {
 				this.listener = newlistener;
 			}
@@ -479,11 +511,11 @@ function addObjectToView(objecttoadd) {
 			} else if ($onclick.attr("action") == "add") {
 				var switchname = $onclick.attr("switch");
 
-				$switches[switchname].value = parseInt($switches[switchname].value) + parseInt($onclick.attr("value")); // just pray to god the user set everything up as integers or i don't even know what happens here but it probably fails
+				$switches[switchname].add($onclick.attr("value"));
 
 			} else if ($onclick.attr("action") == "subtract") {
 				var switchname = $onclick.attr("switch");
-				$switches[switchname].value = parseInt($switches[switchname].value) - parseInt($onclick.attr("value"));
+				$switches[switchname].subtract($onclick.attr("value"));
 
 			} else if ($onclick.attr("action") == "set") {
 				var switchname = $onclick.attr("switch");
