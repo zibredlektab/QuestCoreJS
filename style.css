@@ -53,10 +53,7 @@
 	font-family: sans-serif;
 	text-shadow: 0 0 4px white, 1px 1px 4px white, -1px 1px 4px white, -1px -1px 4px white, 1px -1px 4px white;
 	font-size: 24pt;
-
-/*	margin: auto;
-	left: 0; right: 0; top: 0; bottom: 0;
-*/}
+}
 
 a {
 	cursor: url(cursor/point.png) 11 3, pointer;
@@ -106,7 +103,7 @@ a {
 
 .obj {
 	display: block;
-	position: relative;
+	position: absolute;
 	background-repeat: no-repeat;
 	background-size: 100%;
 	text-decoration:none;

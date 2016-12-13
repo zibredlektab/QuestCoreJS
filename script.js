@@ -105,6 +105,7 @@ function loadConfig(gamename) {
 function populateSwitches() {
 	$gameconfig.find("switch").each(function(){
 		var switchid = $(this).attr("id");
+
 		$switches[switchid] = {
 			internalvalue: $(this).text(),
 			min: parseInt($(this).attr("min")),
@@ -113,7 +114,6 @@ function populateSwitches() {
 			listener: function(val) {},
 
 			set value(val) {
-
 				var newvalue = this.internalvalue;
 
 				if (val > this.max) {
@@ -482,7 +482,6 @@ function addObjectToView(objecttoadd) {
 		}
 
 		obj.css("background-image", "url(\"img/" + $currentroom.attr("id") + "-" + $objid + imagesuffix + ".png\")");
-
 	} else {
 		// this is a simple clickbox, for the time being no special processing is needed
 	}
@@ -493,6 +492,9 @@ function addObjectToView(objecttoadd) {
 	obj.css("height", $objsettings.attr("height") / 3);
 	obj.css("top", $objsettings.attr("y") / 3);
 	obj.css("left", $objsettings.attr("x") / 3);
+
+	// other css stuff
+	obj.css(getObjStyleOptions($objstate));
 
 
 	// what happens when the object is clicked (if it has an onclick)
@@ -577,6 +579,24 @@ function getStateFromSwitch(objsettings, switchvalue) {
 	});
 
 	return newstate;
+}
+
+function getObjStyleOptions(obj) {
+	var options = {};
+	var optionsFromXML = obj.attr("css");
+
+	if (optionsFromXML) {
+		// this object has css attributes
+
+		optionsFromXML.split(";").forEach(function (option) {
+			// each attribute ends in a ;, and for readability may start with a space
+			var thisprop = option.replace(/^\s/,"").split(":");
+			options[thisprop[0]] = thisprop[1];
+		});
+	}
+
+	return options;
+
 }
 
 

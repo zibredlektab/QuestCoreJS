@@ -58,3 +58,16 @@ if the object then defines states, the conditional value is the contents of the 
 states should also be able to specify *ranges* of switch values, perhaps?
 of course now it also occurs to me that i'd maybe like to be able to specify formulas for values
 -> but actually this is where i should start hooking in actual functions to objects i think
+
+
+ON THE SUBJECT OF ONCLICK FORMAT
+I am beginning to think that it would be better for onclicks to be shell objects that can
+	encompass any number of child objects. This would allow for a click to trigger both a
+	popup and a switch change, for example, but it would also allow for what are currently
+	"onclick" events to be triggered any time. For example, a timer-based popup or a switch
+	that changes when the user enters a room.
+
+
+
+
+

@@ -20,13 +20,14 @@
 				<state value="-10">2</state> <!-- this should never happen, because right now there's no reason switch to be negative -->
 			</object>
 		</view>
+
 		<view type="object" id="safe">
-			<object id="digit0-up" x="720" y="460" width="575" height="575">
+			<object id="digit0-up" x="685" y="350" width="45" height="45">
 				<onclick action="add" switch="digit0" value="1"></onclick>
 			</object>
-			<object type="text" id="digit0-text" x="720" y="460" switch="digit0">
-				<state value="5">FIVE</state>
-				<state value="2">ziggity bop-bop</state>
+			<object type="text" id="digit0-text" x="691" y="424" switch="digit0" css="transform: rotate(-7deg); text-decoration: underline"></object>
+			<object id="digit0-down" x="700" y="520" width="45" height="45">
+				<onclick action="subtract" switch="digit0" value="1"></onclick>
 			</object>
 		</view>
 	</room>
