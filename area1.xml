@@ -25,9 +25,49 @@
 			<object id="digit0-up" x="685" y="350" width="45" height="45">
 				<onclick action="add" switch="digit0" value="1"></onclick>
 			</object>
-			<object type="text" id="digit0-text" x="691" y="424" switch="digit0" css="transform: rotate(-7deg); text-decoration: underline"></object>
+			<object type="text" id="digit0-text" x="691" y="424" switch="digit0" css="transform: rotate(-7deg);"></object>
 			<object id="digit0-down" x="700" y="520" width="45" height="45">
 				<onclick action="subtract" switch="digit0" value="1"></onclick>
+			</object>
+
+			<object id="digit1-up" x="762" y="344" width="45" height="45">
+				<onclick action="add" switch="digit1" value="1"></onclick>
+			</object>
+			<object type="text" id="digit1-text" x="765" y="415" switch="digit1" css="transform: rotate(-7deg);"></object>
+			<object id="digit1-down" x="783" y="511" width="45" height="45">
+				<onclick action="subtract" switch="digit1" value="1"></onclick>
+			</object>
+
+			<object id="digit2-up" x="833" y="336" width="45" height="45">
+				<onclick action="add" switch="digit2" value="1"></onclick>
+			</object>
+			<object type="text" id="digit2-text" x="843" y="410" switch="digit2" css="transform: rotate(-4deg);"></object>
+			<object id="digit2-down" x="850" y="501" width="45" height="45">
+				<onclick action="subtract" switch="digit2" value="1"></onclick>
+			</object>
+
+			<object id="digit3-up" x="916" y="347" width="45" height="45">
+				<onclick action="add" switch="digit3" value="1"></onclick>
+			</object>
+			<object type="text" id="digit3-text" x="926" y="408" switch="digit3" css="transform: rotate(-2deg);"></object>
+			<object id="digit3-down" x="930" y="505" width="45" height="45">
+				<onclick action="subtract" switch="digit3" value="1"></onclick>
+			</object>
+
+			<object id="digit4-up" x="991" y="337" width="45" height="45">
+				<onclick action="add" switch="digit4" value="1"></onclick>
+			</object>
+			<object type="text" id="digit4-text" x="1007" y="408" switch="digit4" css="transform: rotate(7deg);"></object>
+			<object id="digit4-down" x="979" y="491" width="45" height="45">
+				<onclick action="subtract" switch="digit4" value="1"></onclick>
+			</object>
+
+			<object id="digit5-up" x="1062" y="347" width="45" height="45">
+				<onclick action="add" switch="digit5" value="1"></onclick>
+			</object>
+			<object type="text" id="digit5-text" x="1070" y="408" switch="digit5" css="transform: rotate(9deg);"></object>
+			<object id="digit5-down" x="1051" y="498" width="45" height="45">
+				<onclick action="subtract" switch="digit5" value="1"></onclick>
 			</object>
 		</view>
 	</room>

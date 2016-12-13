@@ -8,11 +8,11 @@
 
 	<switches>
 		<switch id="digit0" min="0" max="9" rollover="true">0</switch>
-		<switch id="digit1" min="0" max="9">0</switch>
-		<switch id="digit2" min="0" max="9">0</switch>
-		<switch id="digit3" min="0" max="9">0</switch>
-		<switch id="digit4" min="0" max="9">0</switch>
-		<switch id="digit5" min="0" max="9">0</switch>
+		<switch id="digit1" min="0" max="9" rollover="true">0</switch>
+		<switch id="digit2" min="0" max="9" rollover="true">0</switch>
+		<switch id="digit3" min="0" max="9" rollover="true">0</switch>
+		<switch id="digit4" min="0" max="9" rollover="true">0</switch>
+		<switch id="digit5" min="0" max="9" rollover="true">0</switch>
 	</switches>
 
 </QuestCoreGame>
