@@ -111,7 +111,7 @@ function populateSwitches() {
 			min: parseInt($(this).attr("min")),
 			max: parseInt($(this).attr("max")),
 			rollover: $(this).attr("rollover"),
-			listener: function(val) {},
+			listeners:{},
 
 			set value(val) {
 				var newvalue = this.internalvalue;
@@ -134,7 +134,10 @@ function populateSwitches() {
 
 				this.internalvalue = newvalue;
 
-				this.listener(val);
+				// call all of the listener functions for this switch
+				$.each(this.listeners, function(obj, listener) {
+					listener(newvalue);
+				});
 			},
 
 			add: function(val) {
@@ -149,8 +152,13 @@ function populateSwitches() {
 				return this.internalvalue;
 			},
 
-			registerListener: function(newlistener) {
-				this.listener = newlistener;
+			// register listener functions, by adding them to the listeners object (keyed by their object id)
+			registerListener: function(objid, newlistener) {
+				this.listeners[objid] = newlistener;
+			},
+
+			removeListener: function(listenertoremove) {
+				delete this.listeners[listenertoremove];
 			}
 		};
 	});
@@ -402,8 +410,8 @@ function addObjectToView(objecttoadd) {
 	}
 
 
-	// determine if there is an onclick on the state, or on the object itself
 
+	// determine if there is an onclick on the state, or on the object itself
 	if ($objstate.children("onclick").length) {
 		// current state has onclick
 		clickable = true;
@@ -426,6 +434,7 @@ function addObjectToView(objecttoadd) {
 		}
 	}
 
+
 	// use <a> if it is clickable, otherwise make it a <div>
 	// (the attr variable is for the href= value if it is clickable)
 	var tag = "";
@@ -447,8 +456,12 @@ function addObjectToView(objecttoadd) {
 
 	// if this object is dependent on a switch, then we should remove & re-add it if that switch changes
 	if ($objswitch) {
-		$switches[$objswitch].registerListener(function(){
+		$switches[$objswitch].registerListener($objid, function(){
+			// remove the current object, so we can start from a blank state
 			obj.remove();
+			// and remove the object's switch listener
+			$switches[$objswitch].removeListener($objid);
+			// now, add the object again
 			addObjectToView($objsettings);
 		});
 	}

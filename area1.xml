@@ -17,7 +17,7 @@
 					<onclick action="popup" img="ink" caption="it's an ink bottle"></onclick>
 				</state>
 				<state value="5+"></state> <!-- no suffix at 5 or above -->
-				<state value="-10">2</state> <!-- this should never happen, because right now there's no reason switch to be negative -->
+				<state value="-10">2</state> <!-- this should never happen, because right now there's no reason for this switch to be negative -->
 			</object>
 		</view>
 
@@ -33,7 +33,7 @@
 			<object id="digit1-up" x="762" y="344" width="45" height="45">
 				<onclick action="add" switch="digit1" value="1"></onclick>
 			</object>
-			<object type="text" id="digit1-text" x="765" y="415" switch="digit1" css="transform: rotate(-7deg);"></object>
+			<object type="text" id="digit1-text" x="765" y="415" switch="digit0" css="transform: rotate(-7deg);"></object>
 			<object id="digit1-down" x="783" y="511" width="45" height="45">
 				<onclick action="subtract" switch="digit1" value="1"></onclick>
 			</object>
