@@ -49,9 +49,9 @@ $(document).ready(function(){
 	// debug outline checkbox
 	$("#debug").click(function() {
 		if ($(this).prop("checked")) {
-			$("body").prepend("<style>.game * { outline: 2px dotted black;}</style>");
+			$(".game").addClass("outlined");
 		} else {
-			$("style").remove();
+			$(".game").removeClass("outlined");
 		}
 	});
 });
