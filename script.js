@@ -49,7 +49,7 @@ $(document).ready(function(){
 	// debug outline checkbox
 	$("#debug").click(function() {
 		if ($(this).prop("checked")) {
-			$("body").prepend("<style>.game * { border: 2px dotted black; margin: -2px; }</style>");
+			$("body").prepend("<style>.game * { outline: 2px dotted black;}</style>");
 		} else {
 			$("style").remove();
 		}
