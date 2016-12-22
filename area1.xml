@@ -31,11 +31,22 @@
 			</object>
 
 			<object id="digit1-up" x="762" y="344" width="45" height="45">
-				<onclick action="add" switch="digit1" value="1"></onclick>
+				<onclick action="subtract" switch="digit0" value="1"></onclick>
 			</object>
-			<object type="text" id="digit1-text" x="765" y="415" switch="digit0" css="transform: rotate(-7deg);"></object>
+			<object type="text" id="digit1-text" x="765" y="415" switch="digit0" css="transform: rotate(-7deg);">
+				<state value="0">9</state>
+				<state value="1">8</state>
+				<state value="2">7</state>
+				<state value="3">6</state>
+				<state value="4">5</state>
+				<state value="5">4</state>
+				<state value="6">3</state>
+				<state value="7">2</state>
+				<state value="8">1</state>
+				<state value="9">0</state>
+			</object>
 			<object id="digit1-down" x="783" y="511" width="45" height="45">
-				<onclick action="subtract" switch="digit1" value="1"></onclick>
+				<onclick action="add" switch="digit0" value="1"></onclick>
 			</object>
 
 			<object id="digit2-up" x="833" y="336" width="45" height="45">
