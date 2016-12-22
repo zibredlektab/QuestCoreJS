@@ -9,6 +9,11 @@
 	left: 0; right: 0;
 }
 
+.game.outlined * {
+	outline: 2px dotted black;
+}
+
+
 .object-container {
 	position: absolute;
 	width: 0;
