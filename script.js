@@ -456,9 +456,12 @@ function addObjectToView(objecttoadd) {
 
 	// if this object is dependent on a switch, then we should remove & re-add it if that switch changes
 	if ($objswitch) {
+
+		obj.attr("switch", $objswitch);
+
 		$switches[$objswitch].registerListener($objid, function(){
 			// remove the current object, so we can start from a blank state
-			obj.remove();
+			removeObjectFromView($objid);
 			// and remove the object's switch listener
 			$switches[$objswitch].removeListener($objid);
 			// now, add the object again
@@ -544,6 +547,20 @@ function addObjectToView(objecttoadd) {
 }
 
 
+// removeObjectFromView is used to remove any registered listeners, and then remove the object
+function removeObjectFromView(objid) {
+	var $obj = $("#" + objid);
+
+	if ($obj.attr("switch")) {
+		// remove the object's switch listener
+		$switches[$obj.attr("switch")].removeListener(objid);
+	}
+
+	$obj.remove();
+}
+
+
+
 
 // getStateFromSwitch takes a js object defining an object and the value of a switch, and
 // returns a state object if it finds one matching the current value of the switch. if it
@@ -617,7 +634,7 @@ function getObjStyleOptions(obj) {
 function onLeaveView() {
 	if ($currentview != undefined) {
 		$(".obj").each(function(){
-			$(this).remove();
+			removeObjectFromView($(this).attr("id"));
 		});
 	}
 }
