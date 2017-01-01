@@ -700,7 +700,12 @@ function switchToRoom(roomid) {
 
 // makePopUp takes an onclick object (as defined in xml) and constructs a popup overlay from it
 function makePopUp(onclick) {
-	$("#popup-object").attr("src", "img/" + $currentroom.attr("id") + "-" + onclick.attr("img") + ".png");
+	if (onclick.attr("img")) {
+		$("#popup-object").css("display", "inline-block");
+		$("#popup-object").attr("src", "img/" + $currentroom.attr("id") + "-" + onclick.attr("img") + ".png");
+	} else {
+		$("#popup-object").css("display", "none");
+	}
 	$(".popup-contents").append("<p class=\"popup-caption\">" + onclick.attr("caption") + "</p>");
 	$(".popup").fadeIn(200);
 }
