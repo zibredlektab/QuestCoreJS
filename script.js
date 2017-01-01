@@ -213,6 +213,8 @@ function populateRoomViewChain() {
 		var viewid = $(this).attr("id");
 		$currentroomviews[viewid] = $(this); // add all views to the roomviews object
 	});
+
+
 }
 
 
@@ -347,11 +349,6 @@ function navToViewByid(viewid) {
 
 
 	navToView($currentroomviews[viewid]);
-}
-
-// navToObjView takes an onclick object (as defined in xml) and begins navigating to the specified view
-function navToObjView(onclick) {
-	navToViewByid(onclick.attr("id"));
 }
 
 
@@ -516,19 +513,15 @@ function addObjectToView(objecttoadd) {
 	// what happens when the object is clicked (if it has an onclick)
 	if (clickable) {
 		obj.click(function(){
-			//console.log("object " + $objid + " was clicked.");
+			console.log("object " + $objid + " was clicked.");
 
 			var $onclick = $objstate.find("onclick").children();
-			console.log($onclick[0].tagName);
 
 			// process each of the children of the onclick object
-
-		//	for (var i = 0; i < $onclick.length; i++) {
 			$onclick.each(function(){
 				var action = $(this);
-				if (action.tagName() == "view") {
-					console.log("hey");
-					navToObjView(action);
+				if (action.tagName() == "nav") {
+					navToViewByid(action.attr("viewid"));
 
 				} else if (action.tagName() == "popup") {
 					makePopUp(action);

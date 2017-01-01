@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <area>
 	<room id="kitchen">
-		<view id="facing-window"></view>
-		<view id="facing-counter">
+		<view id="n"></view>
+		<view id="e">
 			<object id="safe" x="720" y="460" width="575" height="575">
 				<onclick>
-					<view id="safe"></view>
+					<nav viewid="safe"></nav>
 				</onclick>
 			</object>
 		</view>
@@ -18,7 +18,7 @@
 				<state value="2-4">1<!-- from 2-4, the object will be clickable -->
 					<onclick>
 						<popup img="ink" caption="it's an ink bottle"></popup>
-						<set switch="digit0" value="-10"></set>
+						<set switch="digit0" value="0"></set>
 					</onclick>
 				</state>
 				<state value="5+"></state> <!-- no suffix at 5 or above -->
@@ -111,10 +111,10 @@
 			</object>
 		</view>
 	</room>
+
 	<room id="foyer">
 		<view id="n">
 			<fwd-room>kitchen</fwd-room>
-			<fwd-dir>facing-window</fwd-dir>
 		</view>
 		<view id="e"></view>
 		<view id="s"></view>
@@ -149,7 +149,7 @@ if a "switch" is specified for an object, then the object's state is determined 
 
 valid onlcick actions are:
 
-* view *
+* nav *
 	navigates the view to an object view (providing a "back" nav button)
 
 * popup *

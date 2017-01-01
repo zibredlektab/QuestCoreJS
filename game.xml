@@ -3,7 +3,7 @@
 	<title>ValentinesQuest</title>
 	<starting-area>area1</starting-area>
 	<starting-room>kitchen</starting-room>
-	<starting-direction>facing-window</starting-direction>
+	<starting-direction>n</starting-direction>
 
 
 	<switches>
