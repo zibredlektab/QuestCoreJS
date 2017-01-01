@@ -10,7 +10,7 @@ var gameconfigname = "game";
 
 
 // ---------------------------------------------------------------------------------------
-// INIT
+// INIT (don't edit anything below here)
 // ---------------------------------------------------------------------------------------
 
 
@@ -518,30 +518,38 @@ function addObjectToView(objecttoadd) {
 		obj.click(function(){
 			//console.log("object " + $objid + " was clicked.");
 
-			var $onclick = $objstate.find("onclick");
+			var $onclick = $objstate.find("onclick").children();
+			console.log($onclick[0].tagName);
 
-			if ($onclick.attr("action") == "view") {
-				navToObjView($onclick);
+			// process each of the children of the onclick object
 
-			} else if ($onclick.attr("action") == "popup") {
-				makePopUp($onclick);
+		//	for (var i = 0; i < $onclick.length; i++) {
+			$onclick.each(function(){
+				var action = $(this);
+				if (action.tagName() == "view") {
+					console.log("hey");
+					navToObjView(action);
 
-			} else if ($onclick.attr("action") == "add") {
-				var switchname = $onclick.attr("switch");
+				} else if (action.tagName() == "popup") {
+					makePopUp(action);
 
-				$switches[switchname].add($onclick.attr("value"));
+				} else if (action.tagName() == "add") {
+					var switchname = action.attr("switch");
 
-			} else if ($onclick.attr("action") == "subtract") {
-				var switchname = $onclick.attr("switch");
-				$switches[switchname].subtract($onclick.attr("value"));
+					$switches[switchname].add($onclick.attr("value"));
 
-			} else if ($onclick.attr("action") == "set") {
-				var switchname = $onclick.attr("switch");
-				$switches[switchname].value = $onclick.attr("value");
+				} else if (action.tagName() == "subtract") {
+					var switchname = action.attr("switch");
+					$switches[switchname].subtract(action.attr("value"));
 
-			} else {
-				console.log("object " + $objid + " wants to perform an unknown action (" + $onclick.attr("action") + ")");
-			}
+				} else if (action.tagName() == "set") {
+					var switchname = action.attr("switch");
+					$switches[switchname].value = action.attr("value");
+
+				} else {
+					console.log("object " + $objid + " wants to perform an unknown action (" + action.tagName() + ")");
+				}
+			});
 		});
 	}
 }
@@ -711,6 +719,12 @@ function hidePopUp() {
 }
 
 
+
+
+
+jQuery.fn.tagName = function() {
+	return this.prop("tagName").toLowerCase();
+};
 
 
 // ---------------------------------------------------------------------------------------

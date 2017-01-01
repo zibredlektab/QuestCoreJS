@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <area>
 	<room id="kitchen">
-		<view id="n"></view>
-		<view id="e">
+		<view id="facing-window"></view>
+		<view id="facing-counter">
 			<object id="safe" x="720" y="460" width="575" height="575">
-				<onclick action="view" id="safe"></onclick>
+				<onclick>
+					<view id="safe"></view>
+				</onclick>
 			</object>
 		</view>
 		<view id="s">
@@ -14,7 +16,10 @@
 			<object type="image" id="ink" x="620" y="505" width="75" height="81" switch="digit0">
 				<state value="1-"></state> <!-- no suffix for the filename if the switch is 1 or less -->
 				<state value="2-4">1<!-- from 2-4, the object will be clickable -->
-					<onclick action="popup" img="ink" caption="it's an ink bottle"></onclick>
+					<onclick>
+						<popup img="ink" caption="it's an ink bottle"></popup>
+						<set switch="digit0" value="-10"></set>
+					</onclick>
 				</state>
 				<state value="5+"></state> <!-- no suffix at 5 or above -->
 				<state value="-10">2</state> <!-- this should never happen, because right now there's no reason for this switch to be negative -->
@@ -23,15 +28,21 @@
 
 		<view type="object" id="safe">
 			<object id="digit0-up" x="685" y="350" width="45" height="45">
-				<onclick action="add" switch="digit0" value="1"></onclick>
+				<onclick>
+					<add switch="digit0" value="1"></add>
+				</onclick>
 			</object>
 			<object type="text" id="digit0-text" x="691" y="424" switch="digit0" css="transform: rotate(-7deg);"></object>
 			<object id="digit0-down" x="700" y="520" width="45" height="45">
-				<onclick action="subtract" switch="digit0" value="1"></onclick>
+				<onclick>
+					<subtract switch="digit0" value="1"></subtract>
+				</onclick>
 			</object>
 
 			<object id="digit1-up" x="762" y="344" width="45" height="45">
-				<onclick action="subtract" switch="digit0" value="1"></onclick>
+				<onclick>
+					<subtract switch="digit0" value="1"></subtract>
+				</onclick>
 			</object>
 			<object type="text" id="digit1-text" x="765" y="415" switch="digit0" css="transform: rotate(-7deg);">
 				<state value="0">9</state>
@@ -46,45 +57,64 @@
 				<state value="9">0</state>
 			</object>
 			<object id="digit1-down" x="783" y="511" width="45" height="45">
-				<onclick action="add" switch="digit0" value="1"></onclick>
+				<onclick>
+					<add switch="digit0" value="1"/>
+				</onclick>
 			</object>
 
 			<object id="digit2-up" x="833" y="336" width="45" height="45">
-				<onclick action="add" switch="digit2" value="1"></onclick>
+				<onclick>
+					<add switch="digit2" value="1"/>
+				</onclick>
 			</object>
 			<object type="text" id="digit2-text" x="843" y="410" switch="digit2" css="transform: rotate(-4deg);"></object>
 			<object id="digit2-down" x="850" y="501" width="45" height="45">
-				<onclick action="subtract" switch="digit2" value="1"></onclick>
+				<onclick>
+					<subtract switch="digit2" value="1"/>
+				</onclick>
 			</object>
 
 			<object id="digit3-up" x="916" y="347" width="45" height="45">
-				<onclick action="add" switch="digit3" value="1"></onclick>
+				<onclick>
+					<add switch="digit3" value="1"/>
+				</onclick>
 			</object>
 			<object type="text" id="digit3-text" x="926" y="408" switch="digit3" css="transform: rotate(-2deg);"></object>
 			<object id="digit3-down" x="930" y="505" width="45" height="45">
-				<onclick action="subtract" switch="digit3" value="1"></onclick>
+				<onclick>
+					<subtract switch="digit3" value="1"/>
+				</onclick>
 			</object>
 
 			<object id="digit4-up" x="991" y="337" width="45" height="45">
-				<onclick action="add" switch="digit4" value="1"></onclick>
+				<onclick>
+					<add switch="digit4" value="1"/>
+				</onclick>
 			</object>
 			<object type="text" id="digit4-text" x="1007" y="408" switch="digit4" css="transform: rotate(7deg);"></object>
 			<object id="digit4-down" x="979" y="491" width="45" height="45">
-				<onclick action="subtract" switch="digit4" value="1"></onclick>
+				<onclick>
+					<subtract switch="digit4" value="1"/>
+				</onclick>
 			</object>
 
 			<object id="digit5-up" x="1062" y="347" width="45" height="45">
-				<onclick action="add" switch="digit5" value="1"></onclick>
+				<onclick>
+					<add switch="digit5" value="1"/>
+				</onclick>
 			</object>
 			<object type="text" id="digit5-text" x="1070" y="408" switch="digit5" css="transform: rotate(9deg);"></object>
 			<object id="digit5-down" x="1051" y="498" width="45" height="45">
-				<onclick action="subtract" switch="digit5" value="1"></onclick>
+				<onclick>
+					<subtract switch="digit5" value="1"/>
+				</onclick>
 			</object>
 		</view>
 	</room>
 	<room id="foyer">
 		<view id="n">
 			<fwd-room>kitchen</fwd-room>
+			<fwd-dir>facing-window</fwd-dir>
 		</view>
 		<view id="e"></view>
 		<view id="s"></view>
