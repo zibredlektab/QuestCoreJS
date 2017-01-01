@@ -372,10 +372,14 @@ function onLoadView() {
 		$("#left, #right").removeClass("objectviewnav");
 	}
 
+
 	// add any relevant objects to the view
 	$currentview.find("object").each(function(){
 		addObjectToView($(this));
 	});
+
+	// execute any action objects in the view
+	processActions($currentview.find("actions").children());
 }
 
 
@@ -513,36 +517,8 @@ function addObjectToView(objecttoadd) {
 	// what happens when the object is clicked (if it has an onclick)
 	if (clickable) {
 		obj.click(function(){
-			console.log("object " + $objid + " was clicked.");
-
-			var $onclick = $objstate.find("onclick").children();
-
-			// process each of the children of the onclick object
-			$onclick.each(function(){
-				var action = $(this);
-				if (action.tagName() == "nav") {
-					navToViewByid(action.attr("viewid"));
-
-				} else if (action.tagName() == "popup") {
-					makePopUp(action);
-
-				} else if (action.tagName() == "add") {
-					var switchname = action.attr("switch");
-
-					$switches[switchname].add($onclick.attr("value"));
-
-				} else if (action.tagName() == "subtract") {
-					var switchname = action.attr("switch");
-					$switches[switchname].subtract(action.attr("value"));
-
-				} else if (action.tagName() == "set") {
-					var switchname = action.attr("switch");
-					$switches[switchname].value = action.attr("value");
-
-				} else {
-					console.log("object " + $objid + " wants to perform an unknown action (" + action.tagName() + ")");
-				}
-			});
+			var actions = $objstate.find("onclick").children();
+			processActions(actions);
 		});
 	}
 }
@@ -560,7 +536,34 @@ function removeObjectFromView(objid) {
 	$obj.remove();
 }
 
+// processActions goes through any action objects in the view/object and executes actions
+// depending on what the action is.
+function processActions(actions) {
+	actions.each(function(){
+		var action = $(this);
+		if (action.tagName() == "nav") {
+			navToViewByid(action.attr("viewid"));
 
+		} else if (action.tagName() == "popup") {
+			makePopUp(action);
+
+		} else if (action.tagName() == "add") {
+			var switchname = action.attr("switch");
+			$switches[switchname].add(action.attr("value"));
+
+		} else if (action.tagName() == "subtract") {
+			var switchname = action.attr("switch");
+			$switches[switchname].subtract(action.attr("value"));
+
+		} else if (action.tagName() == "set") {
+			var switchname = action.attr("switch");
+			$switches[switchname].value = action.attr("value");
+
+		} else {
+			console.log("object " + $objid + " wants to perform an unknown action (" + action.tagName() + ")");
+		}
+	});
+}
 
 
 // getStateFromSwitch takes a js object defining an object and the value of a switch, and

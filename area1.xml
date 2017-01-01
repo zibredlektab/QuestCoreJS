@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <area>
 	<room id="kitchen">
-		<view id="n"></view>
+		<view id="n">
+			<actions>
+				<popup caption="welcome to the kitchen"/>
+			</actions>
+		</view>
 		<view id="e">
 			<object id="safe" x="720" y="460" width="575" height="575">
 				<onclick>
