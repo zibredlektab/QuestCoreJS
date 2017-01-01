@@ -36,7 +36,9 @@
 
 .popup-contents {
 	position: absolute;
-	display: inline-block;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	height: 60%;
 	width: 60%;
 	margin: auto;
@@ -45,16 +47,15 @@
 }
 
 #popup-object {
-	padding-top: 10%;
-	display: block;
-	margin: auto;
-	left: 0; right: 0; top: 0; bottom: 0;
 }
 
 
 .popup-caption {
-	display: block;
-	text-align: center;
+	margin: 0;
+	position: absolute;
+
+	align-self: flex-end;
+
 	font-family: sans-serif;
 	text-shadow: 0 0 4px white, 1px 1px 4px white, -1px 1px 4px white, -1px -1px 4px white, 1px -1px 4px white;
 	font-size: 24pt;
