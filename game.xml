@@ -13,6 +13,7 @@
 		<switch id="digit3" min="0" max="9" rollover="true">0</switch>
 		<switch id="digit4" min="0" max="9" rollover="true">0</switch>
 		<switch id="digit5" min="0" max="9" rollover="true">0</switch>
+		<switch id="firstvisittokitchen">true</switch>
 	</switches>
 
 </QuestCoreGame>

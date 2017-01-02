@@ -373,13 +373,50 @@ function onLoadView() {
 	}
 
 
+	var objectstoadd = [];
+	var actionstoperform = [];
+
+
+	// handle state-based actions and objects
+	$currentview.children("switch").each(function(){
+		var state = getStateFromSwitch($(this), $switches[$(this).attr("id")].value);
+		if (state === $(this)) {
+			// none of the available states match the current state of the switch
+			return;
+		} else {
+			// add any relevant objects to the objects array and actions to the actions array
+			state.children().each(function(){
+				if ($(this).tagName == "object") {
+					objectstoadd.push($(this));
+				} else {
+					actionstoperform.push($(this));
+				}
+			});
+		}
+	});
+
+
+	// add any objects/actions that should always happen (outside of switches)
+	$currentview.children().each(function(){
+		if ($(this).tagName() == "object") {
+			objectstoadd.push($(this));
+		} else if ($(this).tagName() != "switch") {
+			actionstoperform.push($(this));
+		}
+	});
+
+	console.log(objectstoadd);
+	console.log(actionstoperform);
+
 	// add any relevant objects to the view
-	$currentview.find("object").each(function(){
-		addObjectToView($(this));
+	objectstoadd.forEach(function(object){
+		addObjectToView(object);
 	});
 
 	// execute any action objects in the view
-	processActions($currentview.find("actions").children());
+	actionstoperform.forEach(function(action) {
+		processAction(action);
+	});
 }
 
 
@@ -540,29 +577,35 @@ function removeObjectFromView(objid) {
 // depending on what the action is.
 function processActions(actions) {
 	actions.each(function(){
-		var action = $(this);
-		if (action.tagName() == "nav") {
-			navToViewByid(action.attr("viewid"));
-
-		} else if (action.tagName() == "popup") {
-			makePopUp(action);
-
-		} else if (action.tagName() == "add") {
-			var switchname = action.attr("switch");
-			$switches[switchname].add(action.attr("value"));
-
-		} else if (action.tagName() == "subtract") {
-			var switchname = action.attr("switch");
-			$switches[switchname].subtract(action.attr("value"));
-
-		} else if (action.tagName() == "set") {
-			var switchname = action.attr("switch");
-			$switches[switchname].value = action.attr("value");
-
-		} else {
-			console.log("object " + $objid + " wants to perform an unknown action (" + action.tagName() + ")");
-		}
+		processAction($(this));
 	});
+}
+
+
+// processAction executes an action, depending on what the object is.
+function processAction(action) {
+	console.log(action);
+	if (action.tagName() == "nav") {
+		navToViewByid(action.attr("viewid"));
+
+	} else if (action.tagName() == "popup") {
+		makePopUp(action);
+
+	} else if (action.tagName() == "add") {
+		var switchname = action.attr("switch");
+		$switches[switchname].add(action.attr("value"));
+
+	} else if (action.tagName() == "subtract") {
+		var switchname = action.attr("switch");
+		$switches[switchname].subtract(action.attr("value"));
+
+	} else if (action.tagName() == "set") {
+		var switchname = action.attr("switch");
+		$switches[switchname].value = action.attr("value");
+
+	} else {
+		console.log("object wants to perform an unknown action (" + action.tagName() + ")");
+	}
 }
 
 
