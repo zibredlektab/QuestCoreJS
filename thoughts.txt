@@ -75,5 +75,4 @@ ON THE SUBJECT OF SWITCH LISTENERS {
 	identified by its objid
 }
 
-
-
+* switches need to be made iterative, right now we only support one layer of variability
