@@ -24,8 +24,7 @@
 		</view>
 		<view id="w">
 			<object type="image" id="ink" x="620" y="505" width="75" height="81" switch="digit0">
-				<state value="1-"></state> <!-- no suffix for the filename if the switch is 1 or less -->
-				<state value="2-4">1<!-- from 2-4, the object will be clickable -->
+				<state value="0-4">1<!-- from 2-4, the object will be clickable -->
 					<onclick>
 						<popup img="ink" caption="it's an ink bottle"></popup>
 						<set switch="digit0" value="0"></set>

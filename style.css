@@ -37,26 +37,26 @@
 .popup-contents {
 	position: absolute;
 	display: flex;
-	justify-content: center;
+	flex-flow: column nowrap;
+	justify-content: flex-end;
 	align-items: center;
+
 	text-align: center;
+
 	height: 60%;
-	width: 60%;
 	margin: auto;
 	left: 0; right: 0; top: 0; bottom: 0;
+
 	pointer-events: none;
 }
 
 #popup-object {
+	margin: auto;
 }
 
 
 .popup-caption {
 	margin: 0;
-	position: absolute;
-
-	align-self: flex-end;
-
 	font-family: sans-serif;
 	text-shadow: 0 0 4px white, 1px 1px 4px white, -1px 1px 4px white, -1px -1px 4px white, 1px -1px 4px white;
 	font-size: 24pt;
