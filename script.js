@@ -295,15 +295,15 @@ function navToView(viewobject) {
 
 	$currentview = viewobject;
 
-	changeBackgroundImage($currentroom.attr("id"), $currentview.attr("id"));
+	changeBackgroundImage($currentarea.find("area").attr("id"), $currentroom.attr("id"), $currentview.attr("id"));
 
 	onLoadView();
 
 }
 
 // changeBackgroundImage changes the game background image (duh)
-function changeBackgroundImage(roomname, viewname) {
-	$(".game").css("background-image", "url(\"img/" + roomname + "-" + viewname + ".png\")");
+function changeBackgroundImage(areaname, roomname, viewname) {
+	$(".game").css("background-image", "url(\"" + areaname + "/" + roomname + "/" + viewname + ".png\")");
 }
 
 // navToViewByIndex uses an index number (from the current room chain) to find the
@@ -535,7 +535,7 @@ function addObjectToView(objecttoadd) {
 			// i would definitely like to have a fallback in here, if it can't find an image matching the suffix...
 		}
 
-		obj.css("background-image", "url(\"img/" + $currentroom.attr("id") + "-" + $objid + imagesuffix + ".png\")");
+		obj.css("background-image", "url(\"" +$currentarea.find("area").attr("id") + "/" + $currentroom.attr("id") + "/" + $objid + imagesuffix + ".png\")");
 	} else {
 		// this is a simple clickbox, for the time being no special processing is needed
 	}
@@ -745,7 +745,7 @@ function switchToRoom(roomid) {
 function makePopUp(onclick) {
 	if (onclick.attr("img")) {
 		$("#popup-object").css("display", "block");
-		$("#popup-object").attr("src", "img/" + $currentroom.attr("id") + "-" + onclick.attr("img") + ".png");
+		$("#popup-object").attr("src", $currentarea.find("area").attr("id") + "/" + $currentroom.attr("id") + "/" + onclick.attr("img") + ".png");
 	} else {
 		$("#popup-object").css("display", "none");
 	}
