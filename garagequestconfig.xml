@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuestCoreGame>
+	<title>GarageQuest</title>
+	<starting-area>garagequest</starting-area>
+	<starting-room>garage</starting-room>
+	<starting-direction>n</starting-direction>
+
+
+	<switches>
+	</switches>
+
+</QuestCoreGame>

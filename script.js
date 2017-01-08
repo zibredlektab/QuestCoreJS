@@ -2,7 +2,7 @@
 // CONFIG
 // ---------------------------------------------------------------------------------------
 
-var gameconfigname = "game";
+var gameconfigname = "garagequestconfig";
 
 
 
@@ -405,8 +405,6 @@ function onLoadView() {
 		}
 	});
 
-	console.log(objectstoadd);
-	console.log(actionstoperform);
 
 	// add any relevant objects to the view
 	objectstoadd.forEach(function(object){

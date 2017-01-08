@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<area id="garagequest">
+	<room id="garage">
+		<view id="n">
+			<object id="box" x="219" y="495" width="186" height="111">
+				<onclick>
+					<popup img="box" caption="Oh eww, Great-Grandma's remains. Put them back, put them back!"/>
+				</onclick>
+			</object>
+		</view>
+		<view id="e"/>
+		<view id="s"/>
+		<view id="w"/>
+	</room>
+</area>
